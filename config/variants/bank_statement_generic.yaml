@@ -1,0 +1,10 @@
+variant_id: bank_statement_generic
+doc_type: bank_statement
+identify:
+  anchors_any_of: ["Account Summary", "Statement Period", "Beginning Balance", "Ending Balance"]
+extract:
+  fields:
+    statement_period:
+      strategy: regex
+      patterns:
+        - 'Statement Period[:\s]*([A-Za-z0-9\-\/ ]+)'

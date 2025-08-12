@@ -1,0 +1,4 @@
+loan_underwriting:
+  required: ["loan_agreement","bank_statement","invoice"]
+  any_of:
+    identity: ["drivers_license","passport","state_id"]

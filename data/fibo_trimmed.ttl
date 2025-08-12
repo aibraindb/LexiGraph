@@ -1,0 +1,35 @@
+@prefix fibo: <https://spec.edmcouncil.org/fibo/ontology/> .
+@prefix ex:   <http://example.org/fibo-demo#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+fibo:Lease           a owl:Class ; rdfs:label "Lease" .
+fibo:LoanAgreement   a owl:Class ; rdfs:label "Loan Agreement" .
+fibo:Invoice         a owl:Class ; rdfs:label "Invoice" .
+fibo:LegalEntity     a owl:Class ; rdfs:label "Legal Entity" .
+fibo:MonetaryAmount  a owl:Class ; rdfs:label "Monetary Amount" .
+
+fibo:hasPrincipalAmount a owl:ObjectProperty ;
+  rdfs:label "has principal amount" ;
+  rdfs:domain fibo:Lease , fibo:LoanAgreement ;
+  rdfs:range  fibo:MonetaryAmount .
+
+fibo:hasEffectiveDate a owl:DatatypeProperty ;
+  rdfs:label "has effective date" ;
+  rdfs:domain fibo:Lease , fibo:LoanAgreement , fibo:Invoice ;
+  rdfs:range  xsd:date .
+
+fibo:hasCounterparty a owl:ObjectProperty ;
+  rdfs:label "has counterparty" ;
+  rdfs:domain fibo:Lease , fibo:LoanAgreement ;
+  rdfs:range  fibo:LegalEntity .
+
+ex:SampleLease a fibo:Lease ;
+  fibo:hasEffectiveDate "2022-03-01"^^xsd:date ;
+  fibo:hasCounterparty  ex:EliteImaging , ex:WellsFargo ;
+  fibo:hasPrincipalAmount ex:Amt48000 .
+
+ex:EliteImaging a fibo:LegalEntity ; rdfs:label "Elite Imaging LLC" .
+ex:WellsFargo   a fibo:LegalEntity ; rdfs:label "Wells Fargo Equipment Finance" .
+ex:Amt48000     a fibo:MonetaryAmount ; rdfs:label "48000.00 USD" .

@@ -1,0 +1,34 @@
+fields:
+  agreement_type:
+    type: enum
+    enum: ["Lease Agreement","Loan Agreement","Invoice","Bank Statement","Tax Levy Notice"]
+    required: true
+    fibo_property: fibo-fbc-fi-fi:hasContractType
+  agreement_date:
+    type: date
+    required: true
+    aliases: ["Agreement Date","Dated"]
+    fibo_property: fibo-fnd-agr-ctr:hasEffectiveDate
+  lessor_name:
+    type: string
+    required: false
+    aliases: ["Lessor","Owner","Creditor"]
+    fibo_property: fibo-fnd-rel-rel:hasCounterparty
+  lessee_name:
+    type: string
+    required: false
+    aliases: ["Lessee","Customer","Borrower"]
+    fibo_property: fibo-fnd-rel-rel:hasCounterparty
+  total_amount:
+    type: money
+    required: false
+    aliases: ["Total","Balance Due","Total Amount"]
+    fibo_property: fibo-fbc-fi-fi:hasPrincipalAmount
+  statement_period:
+    type: string
+    required: false
+    aliases: ["Statement Period","Period Covered"]
+  routing_number:
+    type: string
+    required: false
+    validators: ["routing_mask"]
