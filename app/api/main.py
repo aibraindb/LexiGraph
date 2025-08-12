@@ -2,13 +2,16 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Body
 from fastapi.responses import JSONResponse
 from typing import Dict, Any, List
 import os, tempfile
-
 from app.core.ocr import extract_text_from_pdf
 from app.core.classifier import RuleClassifier
 from app.core.schema import resolve_effective_schema
 from app.core.extractor import extract_fields
 from app.core.fibo import to_rdf
 from app.core.embeddings import HybridIndex
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Body
+from fastapi.responses import JSONResponse
+from typing import Dict, Any
+import os, os.path as p, tempfile, uuid
 
 CONFIG_DIR = os.environ.get("CONFIG_DIR","config")
 VECTOR_DIR = os.environ.get("VECTOR_STORE_DIR", "data/vector_index")
@@ -17,6 +20,57 @@ app = FastAPI(title="Document Intelligence MVP")
 _classifier = RuleClassifier(CONFIG_DIR)
 
 _index = HybridIndex.load(VECTOR_DIR, dim=256)  # load if exists, else empty
+
+
+LabeledRoot = "data/labeled"
+os.makedirs(LabeledRoot, exist_ok=True)
+
+@app.post("/train/label")
+async def train_label(
+    file: UploadFile = File(...),
+    variant_id: str = Query(..., description="e.g., lease_docusign_v1"),
+    persist_copy: bool = Query(True, description="store text for rule mining"),
+):
+    # save temp
+    with tempfile.NamedTemporaryFile(delete=False, suffix=p.splitext(file.filename or "")[1] or ".pdf") as tmp:
+        tmp.write(await file.read()); path = tmp.name
+    from app.core.ocr import extract_text_from_pdf
+    text = extract_text_from_pdf(path)
+    try: os.unlink(path)
+    except Exception: pass
+
+    if not text or not text.strip():
+        raise HTTPException(status_code=422, detail="scanned_pdf_unsupported")
+
+    # add to vector index and persist
+    _index.add([text], [variant_id]); _index.save(VECTOR_DIR)
+
+    # optionally save raw text for rule mining later
+    if persist_copy:
+        dirp = p.join(LabeledRoot, variant_id)
+        os.makedirs(dirp, exist_ok=True)
+        with open(p.join(dirp, f"{uuid.uuid4().hex}.txt"), "w") as f:
+            f.write(text)
+
+    return {"status": "ok", "variant_id": variant_id, "chars": len(text)}
+
+
+@app.get("/variants/list")
+def list_variants():
+    import os, os.path as p, yaml
+    vdir = p.join(CONFIG_DIR, "variants")
+    out = []
+    for name in os.listdir(vdir):
+        if not name.endswith(".yaml"):
+            continue
+        obj = yaml.safe_load(open(p.join(vdir, name)))
+        out.append({
+            "variant_id": obj.get("variant_id"),
+            "doc_type": obj.get("doc_type"),
+            "file": name
+        })
+    out.sort(key=lambda x: (x["doc_type"] or "", x["variant_id"] or ""))
+    return {"variants": out}
 
 @app.post("/classify")
 async def classify(files: List[UploadFile] = File(...)):

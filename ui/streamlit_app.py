@@ -25,10 +25,48 @@ with st.sidebar:
     beta  = st.slider("β weight (embeddings)", 0.0, 1.0, 0.3, 0.05)
     st.caption("Server")
     api_input = st.text_input("API base URL", value=API_BASE, help="Your FastAPI URL, e.g., http://127.0.0.1:8000")
+    st.markdown("---")
+    st.caption("Train on upload")
+    try:
+        variant_rows = call_api_list_variants()
+        variant_options = [f"{v['variant_id']}  · {v['doc_type']}" for v in variant_rows]
+        selected_variant = st.selectbox(
+            "Choose a variant to train",
+            options=variant_options if variant_options else ["(no variants found)"],
+            index=0 if variant_options else None,
+            help="Adds this upload to the vector index under the chosen variant"
+        )
+        # Extract the pure variant_id from "vid · doc_type"
+        selected_variant_id = selected_variant.split("·")[0].strip() if variant_options else None
+    except Exception:
+        st.warning("Could not load variants from API.")
+        selected_variant_id = None
+
+    train_on_upload = st.checkbox("Train immediately on upload", value=False)
 
 API_BASE = api_input.strip() or API_BASE
 
 # ---- Helpers ----------------------------------------------------------------
+
+def call_api_list_variants():
+    r = requests.get(f"{API_BASE}/variants/list", timeout=20)
+    r.raise_for_status()
+    return r.json().get("variants", [])
+
+def call_api_train_label(file_bytes: bytes, filename: str, variant_id: str):
+    files = {"file": (filename, io.BytesIO(file_bytes), "application/pdf")}
+    r = requests.post(
+        f"{API_BASE}/train/label",
+        params={"variant_id": variant_id, "persist_copy": True},
+        files=files,
+        timeout=180,
+    )
+    if r.status_code >= 400:
+        try:
+            return {"__error__": True, "status": r.status_code, "json": r.json()}
+        except Exception:
+            return {"__error__": True, "status": r.status_code, "text": r.text}
+    return r.json()
 
 def call_api_classify_hybrid(file_bytes: bytes, filename: str, mode_key: str, add_flag: bool, alpha: float, beta: float):
     files = {"file": (filename, io.BytesIO(file_bytes), "application/pdf")}
@@ -130,6 +168,22 @@ if not uploaded:
     st.stop()
 
 file_bytes = uploaded.read()
+
+# If user opted to train on upload, do it now (before classification)
+if train_on_upload and selected_variant_id:
+    with st.spinner(f"Training with label: {selected_variant_id}…"):
+        resp = call_api_train_label(file_bytes, uploaded.name, selected_variant_id)
+    if isinstance(resp, dict) and resp.get("__error__"):
+        st.error(f"/train/label → HTTP {resp['status']}")
+        if "json" in resp:
+            st.code(json.dumps(resp["json"], indent=2), language="json")
+        else:
+            st.code(resp.get("text", ""), language="text")
+        st.stop()
+    else:
+        st.success(f"Added to index under `{selected_variant_id}`. Embeddings persisted.")
+    with st.spinner("Re-classifying with updated index…"):
+        cls = call_api_classify_hybrid(file_bytes, uploaded.name, mode, add_to_index, alpha, beta)
 
 with st.spinner("Classifying…"):
     cls = call_api_classify_hybrid(file_bytes, uploaded.name, mode, add_to_index, alpha, beta)
