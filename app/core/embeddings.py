@@ -1,140 +1,103 @@
-from __future__ import annotations
-from typing import List, Tuple, Dict, Optional
-import os, json
-import numpy as np
+import os, json, pickle, numpy as np
+from pathlib import Path
 
 try:
     import faiss  # type: ignore
-    _FAISS_AVAILABLE = True
+    _HAVE_FAISS = True
 except Exception:
-    _FAISS_AVAILABLE = False
+    _HAVE_FAISS = False
 
-def _embed(text: str, dim: int = 256) -> np.ndarray:
-    rng = np.random.default_rng(abs(hash(text)) % (2**32))
-    v = rng.normal(size=dim).astype('float32')
-    n = np.linalg.norm(v)
-    return v / (n if n else 1.0)
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.neighbors import NearestNeighbors
 
-class HybridIndex:
-    def __init__(self, dim: int = 256):
-        self.dim = dim
-        self.vecs: Optional[np.ndarray] = None
-        self.labels: List[str] = []
-        self.payloads: List[str] = []
-        self.ids: List[str] = []
-        self._faiss = None
-        self._last_added_ids: List[str] = []
+class SimpleVectorStore:
+    """TF-IDF + FAISS (inner product) or sklearn cosine. Index per doc_id."""
+    def __init__(self, index_dir="data/docs/index"):
+        self.index_dir = Path(index_dir)
+        self.index_dir.mkdir(parents=True, exist_ok=True)
+        self.vectorizer = None
+        self.nn = None
+        self.faiss_index = None
+        self.doc_ids = []
 
-    def save(self, store_dir: str):
-        os.makedirs(store_dir, exist_ok=True)
-        with open(os.path.join(store_dir, 'meta.json'),'w') as f:
-            json.dump({'dim': self.dim, 'labels': self.labels, 'ids': self.ids}, f)
-        np.save(os.path.join(store_dir, 'vecs.npy'), self.vecs if self.vecs is not None else np.zeros((0,self.dim),dtype='float32'))
-        with open(os.path.join(store_dir, 'payloads.jsonl'),'w') as f:
-            for t in self.payloads: f.write(json.dumps({'text':t})+'\n')
+    def _paths(self):
+        return {
+            "vecs": self.index_dir / "X.npy",
+            "doc_ids": self.index_dir / "doc_ids.json",
+            "vectorizer": self.index_dir / "vectorizer.pkl"
+        }
 
-    @classmethod
-    def load(cls, store_dir: str, dim: int = 256) -> 'HybridIndex':
-        obj = cls(dim=dim)
-        try:
-            with open(os.path.join(store_dir,'meta.json')) as f:
-                meta = json.load(f)
-            obj.dim = int(meta.get('dim', dim))
-            obj.labels = list(meta.get('labels', []))
-            obj.ids = list(meta.get('ids', []))
-            obj.vecs = np.load(os.path.join(store_dir,'vecs.npy'))
-            obj.payloads = []
-            pth = os.path.join(store_dir,'payloads.jsonl')
-            if os.path.exists(pth):
-                with open(pth) as f:
-                    for line in f:
-                        if line.strip(): obj.payloads.append(json.loads(line)['text'])
-            obj._rebuild_faiss()
-        except Exception:
-            obj.vecs = None; obj.labels = []; obj.payloads = []; obj._faiss = None; obj.ids = []
-        return obj
+    def save(self):
+        paths = self._paths()
+        if self.vectorizer is not None:
+            with open(paths["vectorizer"], "wb") as f:
+                pickle.dump(self.vectorizer, f)
+        if hasattr(self, "X") and self.X is not None:
+            np.save(paths["vecs"], self.X.astype("float32"))
+        with open(paths["doc_ids"], "w") as f:
+            json.dump(self.doc_ids, f)
 
-    def _rebuild_faiss(self):
-        if not _FAISS_AVAILABLE:
-            self._faiss = None; return
-        self._faiss = faiss.IndexFlatL2(self.dim)
-        if self.vecs is not None and len(self.vecs)>0:
-            self._faiss.add(self.vecs.astype('float32'))
-
-    def add(self, texts: List[str], labels: List[str]) -> List[str]:
-        if not texts: return []
-        import uuid as _uuid
-        new_vecs = np.stack([_embed(t, self.dim) for t in texts]).astype('float32')
-        if self.vecs is None or len(self.vecs)==0:
-            self.vecs = new_vecs
-        else:
-            self.vecs = np.vstack([self.vecs, new_vecs])
-        new_ids = [_uuid.uuid4().hex for _ in texts]
-        self.payloads.extend(texts); self.labels.extend(labels); self.ids.extend(new_ids)
-        self._last_added_ids = list(new_ids)
-        if _FAISS_AVAILABLE:
-            if self._faiss is None: self._rebuild_faiss()
-            self._faiss.add(new_vecs)
-        return new_ids
-
-    def search(self, query: str, k: int = 5):
-        if self.vecs is None or len(self.vecs)==0: return []
-        q = _embed(query, self.dim).astype('float32')[None,:]
-        if _FAISS_AVAILABLE and self._faiss is not None:
-            D,I = self._faiss.search(q, k)
-            out = []
-            for d,i in zip(D[0],I[0]):
-                if i==-1: continue
-                out.append((int(i), float(d), self.payloads[i], self.labels[i], self.ids[i]))
-            return out
-        V = self.vecs
-        num = V @ q[0]
-        den = (np.linalg.norm(V,axis=1) * (np.linalg.norm(q[0]) or 1.0)) + 1e-9
-        sims = num/den
-        dists = 2.0 - 2.0*sims
-        idxs = np.argsort(dists)[:k]
-        return [(int(i), float(dists[i]), self.payloads[int(i)], self.labels[int(i)], self.ids[int(i)]) for i in idxs]
-
-    def similarity_to_label(self, label: str, text: str) -> float:
-        if self.vecs is None or len(self.vecs)==0: return 0.0
-        import numpy as np
-        mask = np.array([1 if l==label else 0 for l in self.labels], dtype=bool)
-        if not mask.any(): return 0.0
-        centroid = self.vecs[mask].mean(axis=0)
-        cn = np.linalg.norm(centroid)
-        if cn==0: return 0.0
-        centroid = centroid / cn
-        v = _embed(text, self.dim)
-        vn = np.linalg.norm(v)
-        if vn==0: return 0.0
-        v = v / vn
-        return float(v @ centroid)
-
-    def delete(self, entry_id: str) -> bool:
-        if entry_id not in self.ids: return False
-        import numpy as np
-        i = self.ids.index(entry_id)
-        self.ids.pop(i); self.labels.pop(i); self.payloads.pop(i)
-        if self.vecs is not None and len(self.vecs)>0:
-            self.vecs = np.delete(self.vecs, i, axis=0)
-        self._rebuild_faiss()
+    def load(self):
+        paths = self._paths()
+        if not paths["vectorizer"].exists() or not paths["vecs"].exists() or not paths["doc_ids"].exists():
+            return False
+        with open(paths["vectorizer"], "rb") as f:
+            self.vectorizer = pickle.load(f)
+        self.X = np.load(paths["vecs"])
+        self.doc_ids = json.load(open(paths["doc_ids"]))
+        self._build()
         return True
 
-    def list_entries(self, label: str | None = None, limit: int = 100):
-        rows=[]
-        for i,(eid,lbl) in enumerate(zip(self.ids, self.labels)):
-            if label and lbl!=label: continue
-            rows.append({"id":eid,"label":lbl,"chars":len(self.payloads[i])})
-            if len(rows)>=limit: break
-        return rows
+    def _build(self):
+        if _HAVE_FAISS:
+            dim = self.X.shape[1]
+            self.faiss_index = faiss.IndexFlatIP(dim)
+            Xn = self._normalize(self.X.astype("float32"))
+            self.faiss_index.add(Xn)
+        else:
+            self.nn = NearestNeighbors(metric="cosine", n_neighbors=5).fit(self.X)
 
-    def undo_last_add(self) -> list[str]:
-        undone = []
-        for eid in list(self._last_added_ids):
-            if self.delete(eid):
-                undone.append(eid)
-        self._last_added_ids = []
-        return undone
+    def _normalize(self, x):
+        n = np.linalg.norm(x, axis=1, keepdims=True) + 1e-9
+        return x / n
 
-class FaissIndex(HybridIndex):
-    pass
+    def add_document(self, doc_id: str, text: str):
+        existed = self.load()
+        # reconstruct corpus from docs on disk for consistent TFIDF
+        corpus = []
+        doc_ids = []
+        if existed:
+            doc_ids = self.doc_ids
+            for did in doc_ids:
+                p = Path("data/docs") / f"{did}.json"
+                try:
+                    j = json.loads(p.read_text())
+                    corpus.append(j.get("text",""))
+                except Exception:
+                    corpus.append("")
+        corpus.append(text)
+        doc_ids.append(doc_id)
+
+        self.vectorizer = TfidfVectorizer(ngram_range=(1,2), min_df=1)
+        self.X = self.vectorizer.fit_transform(corpus).astype("float32").toarray()
+        self.doc_ids = doc_ids
+        self._build()
+        self.save()
+
+    def query(self, text: str, topk=5):
+        if self.vectorizer is None or (self.faiss_index is None and self.nn is None):
+            return []
+        q = self.vectorizer.transform([text]).astype("float32").toarray()
+        if _HAVE_FAISS:
+            D, I = self.faiss_index.search(self._normalize(q), topk)
+            sims = D[0].tolist()
+            idxs = I[0].tolist()
+        else:
+            dists, idxs = self.nn.kneighbors(q, n_neighbors=min(topk, len(self.doc_ids)))
+            sims = [1 - d for d in dists[0]]
+        out = []
+        for sim, idx in zip(sims, idxs):
+            if idx < 0 or idx >= len(self.doc_ids):
+                continue
+            out.append({"doc_id": self.doc_ids[idx], "similarity": float(sim)})
+        return out

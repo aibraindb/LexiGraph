@@ -1,10 +1,9 @@
 fastapi==0.111.0
-uvicorn==0.30.1
-pdfminer.six==20231228
-pdfplumber==0.11.0
-PyYAML==6.0.1
-faiss-cpu==1.7.4
-numpy<2.0
+uvicorn[standard]==0.30.1
 pydantic==2.7.4
-regex==2024.5.15
 rdflib==7.0.0
+pdfminer.six==20240706
+PyYAML==6.0.2
+numpy<2
+scikit-learn==1.4.2
+faiss-cpu==1.7.4

@@ -1,7 +1,0 @@
-app:
-  vector_store_dir: data/vector_index
-  embedding_dim: 256
-  default_mode: hybrid   # hybrid|rule
-  alpha: 0.7
-  beta: 0.3
-  fibo_ttl: data/fibo_trimmed.ttl
