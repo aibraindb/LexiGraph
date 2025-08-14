@@ -1,8 +1,8 @@
 from typing import Dict, Any
 import yaml, os, copy, os.path as p
 
-def _load_yaml(path:str): 
-    with open(path,'r') as f: 
+def _load_yaml(path:str):
+    with open(path,'r') as f:
         return yaml.safe_load(f)
 
 def load_canonical(config_dir:str)->Dict[str,Any]:

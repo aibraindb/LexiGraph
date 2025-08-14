@@ -2,6 +2,7 @@ variant_id: invoice_generic
 doc_type: invoice
 identify:
   anchors_any_of: ["INVOICE", "Invoice #", "Invoice Number", "Balance Due"]
+  page_scope: 1
 extract:
   fields:
     agreement_type: {strategy: literal, value: "Invoice"}

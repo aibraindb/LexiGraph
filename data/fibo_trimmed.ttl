@@ -24,12 +24,3 @@ fibo:hasCounterparty a owl:ObjectProperty ;
   rdfs:label "has counterparty" ;
   rdfs:domain fibo:Lease , fibo:LoanAgreement ;
   rdfs:range  fibo:LegalEntity .
-
-ex:SampleLease a fibo:Lease ;
-  fibo:hasEffectiveDate "2022-03-01"^^xsd:date ;
-  fibo:hasCounterparty  ex:EliteImaging , ex:WellsFargo ;
-  fibo:hasPrincipalAmount ex:Amt48000 .
-
-ex:EliteImaging a fibo:LegalEntity ; rdfs:label "Elite Imaging LLC" .
-ex:WellsFargo   a fibo:LegalEntity ; rdfs:label "Wells Fargo Equipment Finance" .
-ex:Amt48000     a fibo:MonetaryAmount ; rdfs:label "48000.00 USD" .

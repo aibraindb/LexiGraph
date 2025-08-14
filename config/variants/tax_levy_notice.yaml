@@ -1,10 +1,10 @@
 variant_id: tax_levy_notice
 doc_type: tax_levy_notice
 identify:
-  anchors_all_of: ["Notice of Levy"]            # require explicit phrase
+  anchors_all_of: ["Notice of Levy"]
   anchors_any_of: ["Internal Revenue Service", "State Tax Levy"]
   negative_anchors: ["Lease Agreement", "Promissory Note", "Invoice", "Statement Period"]
-  page_scope: 1                                  # only look at page 1
+  page_scope: 1
 extract:
   fields:
     agreement_type: {strategy: literal, value: "Tax Levy Notice"}

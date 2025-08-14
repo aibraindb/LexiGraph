@@ -2,6 +2,8 @@ variant_id: loan_generic
 doc_type: loan_agreement
 identify:
   anchors_any_of: ["Loan Agreement", "Promissory Note", "APR", "Finance Charge"]
+  negative_anchors: ["Lease Agreement", "Invoice", "Notice of Levy"]
+  page_scope: 1
 extract:
   fields:
     agreement_type: {strategy: literal, value: "Loan Agreement"}

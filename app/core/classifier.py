@@ -3,7 +3,7 @@ import os, yaml
 
 def _lower(s): return s.lower() if isinstance(s, str) else s
 
-def _page_split(text: str, sep="\f"):  # pdfminer puts form feed between pages
+def _page_split(text: str, sep="\f"):
     return (text or "").split(sep)
 
 class RuleClassifier:
@@ -20,7 +20,7 @@ class RuleClassifier:
         any_of = [_lower(a) for a in ident.get('anchors_any_of',[])]
         all_of = [_lower(a) for a in ident.get('anchors_all_of',[])]
         negatives = [_lower(a) for a in ident.get('negative_anchors',[])]
-        page_scope = ident.get('page_scope', 'any')  # 'any' | 1 | [1,2]
+        page_scope = ident.get('page_scope', 'any')
 
         pages = _page_split(text)
         if page_scope == 'any':
@@ -42,14 +42,14 @@ class RuleClassifier:
             if all(a in search_text for a in all_of):
                 score += 2.0 * len(all_of); rationale += [f"hit(all): {a}" for a in all_of]
             else:
-                return 0.0, ["miss(all)"]  # hard fail
+                return 0.0, ["miss(all)"]
 
         if any_of:
             hits = [a for a in any_of if a in search_text]
             if hits:
                 score += 1.0 * len(hits); rationale += [f"hit(any): {a}" for a in hits]
             else:
-                return 0.0, ["miss(any)"]  # hard fail
+                return 0.0, ["miss(any)"]
 
         neg_hits = [n for n in negatives if n in search_text]
         if neg_hits:

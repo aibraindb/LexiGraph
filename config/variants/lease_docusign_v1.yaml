@@ -2,6 +2,8 @@ variant_id: lease_docusign_v1
 doc_type: lease_agreement
 identify:
   anchors_all_of: ["Lease Agreement", "DocuSign Envelope ID"]
+  negative_anchors: ["Invoice", "Statement Period", "Notice of Levy"]
+  page_scope: 1
 extract:
   fields:
     agreement_type: {strategy: literal, value: "Lease Agreement"}
@@ -12,11 +14,11 @@ extract:
     lessor_name:
       strategy: anchor_window
       anchor: "Lessor"
-      window_lines_after: 1
+      window_lines_after: 3
     lessee_name:
       strategy: anchor_window
       anchor: "Lessee"
-      window_lines_after: 1
+      window_lines_after: 3
     total_amount:
       strategy: regex
       patterns:
