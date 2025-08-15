@@ -1,3 +1,0 @@
-
-<http://example.org/doc/e0e8a357> a <https://spec.edmcouncil.org/fibo/ontology/FBC/FunctionalEntities/NorthAmericanEntities/USFinancialServicesEntities/SavingsAndLoanAssociation> .
-

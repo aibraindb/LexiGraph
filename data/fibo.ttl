@@ -1,0 +1,11 @@
+
+@prefix fibo-doc: <https://spec.edmcouncil.org/fibo/ontology/BE/LegalEntities/Document/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:   <http://example.org/> .
+
+fibo-doc:Document a rdfs:Class ; rdfs:label "Document" .
+ex:LoanAgreement a rdfs:Class ; rdfs:subClassOf fibo-doc:Document ; rdfs:label "Loan Agreement" .
+ex:LeaseAgreement a rdfs:Class ; rdfs:subClassOf fibo-doc:Document ; rdfs:label "Lease Agreement" .
+ex:Invoice a rdfs:Class ; rdfs:subClassOf fibo-doc:Document ; rdfs:label "Invoice" .
+ex:FundingDetailSheet a rdfs:Class ; rdfs:subClassOf fibo-doc:Document ; rdfs:label "Funding Detail Sheet" .
+ex:NominalLeaseAgreement a rdfs:Class ; rdfs:subClassOf fibo-doc:Document ; rdfs:label "Nominal Lease Agreement" .

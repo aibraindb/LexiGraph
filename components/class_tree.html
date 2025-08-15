@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<style>
+body { font-family: system-ui, sans-serif; margin:0; }
+#toolbar { padding:8px; background:#f6f6f6; border-bottom:1px solid #ddd; display:flex; gap:8px; align-items:center; }
+#tree { padding:10px 12px; max-height:520px; overflow:auto; }
+.node { cursor:pointer; padding:2px 0; }
+.children { margin-left:16px; display:none; }
+.node.open + .children { display:block; }
+.small { color:#666; font-size:12px; margin-left:6px; }
+.btn { padding:6px 10px; border:1px solid #bbb; background:#fff; border-radius:6px; cursor:pointer; }
+.btn:hover { background:#f0f0f0; }
+#max { margin-left:auto; }
+.tooltip { position:absolute; pointer-events:none; background:#111; color:#fff; padding:6px 8px; border-radius:6px; font-size:12px; opacity:0; transition:opacity .1s; max-width:420px; }
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <button id="collapse" class="btn">Collapse all</button>
+  <button id="expand" class="btn">Expand roots</button>
+  <button id="max" class="btn">⤢ Maximize</button>
+</div>
+<div id="tree"></div>
+<div id="tooltip" class="tooltip"></div>
+<script>
+(function(){
+  const apiBase = window.apiBase || "http://127.0.0.1:8000";
+  const data = window.treeData || {"roots":[]};
+  const infoCache = {};
+
+  const elTree = document.getElementById('tree');
+  const tip = document.getElementById('tooltip');
+
+  function render(){
+    elTree.innerHTML = "";
+    data.roots.forEach(root => elTree.appendChild(renderNode(root)));
+  }
+
+  function renderNode(n){
+    const wrap = document.createElement('div');
+
+    const head = document.createElement('div');
+    head.className = 'node';
+    head.textContent = n.label;
+    head.setAttribute('data-uri', n.uri);
+    head.addEventListener('click', async (e)=>{
+      if (e.metaKey || e.ctrlKey) {
+        select(n.uri, n.label);
+        return;
+      }
+      head.classList.toggle('open');
+    });
+    head.addEventListener('dblclick', ()=> select(n.uri, n.label));
+
+    head.addEventListener('mouseenter', async (e)=>{
+      const rect = head.getBoundingClientRect();
+      const info = await getInfo(n.uri);
+      tip.innerHTML = `
+        <b>${n.label}</b><br/>
+        <span class="small">${n.uri}</span><br/>
+        <div class="small">Parents: ${(info.parents||[]).map(u=>u.split('/').pop()).join(', ')||'—'}</div>
+        <div class="small">Children: ${(info.children||[]).map(u=>u.split('/').pop()).join(', ')||'—'}</div>
+      `;
+      tip.style.left = (rect.left+10)+'px';
+      tip.style.top = (rect.top+window.scrollY+20)+'px';
+      tip.style.opacity = 1;
+    });
+    head.addEventListener('mouseleave', ()=> tip.style.opacity = 0);
+
+    const kids = document.createElement('div');
+    kids.className = 'children';
+    (n.children||[]).forEach(c => kids.appendChild(renderNode(c)));
+
+    wrap.appendChild(head);
+    wrap.appendChild(kids);
+    return wrap;
+  }
+
+  async function getInfo(uri){
+    if (infoCache[uri]) return infoCache[uri];
+    try{
+      const r = await fetch(apiBase + "/fibo/nodeinfo_bulk", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({uris:[uri]})
+      });
+      const js = await r.json();
+      infoCache[uri] = js[uri] || {};
+      return infoCache[uri];
+    }catch(e){ return {}; }
+  }
+
+  async function select(uri, label){
+    try{
+      await fetch(apiBase + "/ui/set_selection?uri="+encodeURIComponent(uri), {method:"POST"});
+      alert("Selected: " + (label||uri.split('/').pop()));
+    }catch(e){}
+  }
+
+  document.getElementById('collapse').onclick = ()=>{
+    document.querySelectorAll('.node.open').forEach(n=>n.classList.remove('open'));
+  };
+  document.getElementById('expand').onclick = ()=>{
+    document.querySelectorAll('#tree > div > .node').forEach(n=>n.classList.add('open'));
+  };
+  document.getElementById('max').onclick = ()=>{
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
