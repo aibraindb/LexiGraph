@@ -1,103 +1,74 @@
-import os, json, pickle, numpy as np
+
+import json, pickle, numpy as np
 from pathlib import Path
-
 try:
-    import faiss  # type: ignore
-    _HAVE_FAISS = True
+    import faiss
+    HAVE_FAISS = True
 except Exception:
-    _HAVE_FAISS = False
-
+    HAVE_FAISS = False
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 
 class SimpleVectorStore:
-    """TF-IDF + FAISS (inner product) or sklearn cosine. Index per doc_id."""
-    def __init__(self, index_dir="data/docs/index"):
-        self.index_dir = Path(index_dir)
-        self.index_dir.mkdir(parents=True, exist_ok=True)
-        self.vectorizer = None
-        self.nn = None
-        self.faiss_index = None
-        self.doc_ids = []
-
-    def _paths(self):
-        return {
-            "vecs": self.index_dir / "X.npy",
-            "doc_ids": self.index_dir / "doc_ids.json",
-            "vectorizer": self.index_dir / "vectorizer.pkl"
-        }
-
-    def save(self):
-        paths = self._paths()
-        if self.vectorizer is not None:
-            with open(paths["vectorizer"], "wb") as f:
-                pickle.dump(self.vectorizer, f)
-        if hasattr(self, "X") and self.X is not None:
-            np.save(paths["vecs"], self.X.astype("float32"))
-        with open(paths["doc_ids"], "w") as f:
-            json.dump(self.doc_ids, f)
-
-    def load(self):
-        paths = self._paths()
-        if not paths["vectorizer"].exists() or not paths["vecs"].exists() or not paths["doc_ids"].exists():
-            return False
-        with open(paths["vectorizer"], "rb") as f:
-            self.vectorizer = pickle.load(f)
-        self.X = np.load(paths["vecs"])
-        self.doc_ids = json.load(open(paths["doc_ids"]))
-        self._build()
-        return True
-
+    def __init__(self, dirpath: str):
+        self.dir = Path(dirpath); self.dir.mkdir(parents=True, exist_ok=True)
+        self.vecs_path = self.dir/'vecs.npy'
+        self.meta_path = self.dir/'meta.json'
+        self.vectorizer_path = self.dir/'vectorizer.pkl'
+        self._X=None; self._meta=[]; self._faiss=None; self._nn=None; self._vectorizer=None
+        self._load()
+    def _load(self):
+        if self.vectorizer_path.exists() and self.vecs_path.exists() and self.meta_path.exists():
+            with open(self.vectorizer_path,'rb') as f: self._vectorizer = pickle.load(f)
+            self._X = np.load(self.vecs_path)
+            self._meta = json.loads(self.meta_path.read_text())
+            self._build()
+        else:
+            self._vectorizer = TfidfVectorizer(ngram_range=(1,2), min_df=1)
     def _build(self):
-        if _HAVE_FAISS:
-            dim = self.X.shape[1]
-            self.faiss_index = faiss.IndexFlatIP(dim)
-            Xn = self._normalize(self.X.astype("float32"))
-            self.faiss_index.add(Xn)
+        if self._X is None or len(self._X)==0: self._faiss=None; self._nn=None; return
+        if HAVE_FAISS:
+            dim = self._X.shape[1]; self._faiss = faiss.IndexFlatIP(dim)
+            Xn = self._normalize(self._X.astype('float32')); self._faiss.add(Xn)
         else:
-            self.nn = NearestNeighbors(metric="cosine", n_neighbors=5).fit(self.X)
-
+            self._nn = NearestNeighbors(metric='cosine', n_neighbors=min(8,len(self._meta))).fit(self._X)
     def _normalize(self, x):
-        n = np.linalg.norm(x, axis=1, keepdims=True) + 1e-9
-        return x / n
-
-    def add_document(self, doc_id: str, text: str):
-        existed = self.load()
-        # reconstruct corpus from docs on disk for consistent TFIDF
-        corpus = []
-        doc_ids = []
-        if existed:
-            doc_ids = self.doc_ids
-            for did in doc_ids:
-                p = Path("data/docs") / f"{did}.json"
-                try:
-                    j = json.loads(p.read_text())
-                    corpus.append(j.get("text",""))
-                except Exception:
-                    corpus.append("")
-        corpus.append(text)
-        doc_ids.append(doc_id)
-
-        self.vectorizer = TfidfVectorizer(ngram_range=(1,2), min_df=1)
-        self.X = self.vectorizer.fit_transform(corpus).astype("float32").toarray()
-        self.doc_ids = doc_ids
+        n = np.linalg.norm(x, axis=1, keepdims=True)+1e-9; return x/n
+    def add(self, text: str, doc_id: str, fibo_class_uri: str|None=None):
+        corpus = [m['text'] for m in self._meta]+[text]
+        self._vectorizer = TfidfVectorizer(ngram_range=(1,2), min_df=1)
+        X = self._vectorizer.fit_transform(corpus).astype('float32').toarray()
+        self._X = X; self._meta.append({'doc_id':doc_id,'text':text,'fibo_class_uri':fibo_class_uri})
+        with open(self.vectorizer_path,'wb') as f: pickle.dump(self._vectorizer,f)
+        np.save(self.vecs_path, self._X.astype('float32')); self.meta_path.write_text(json.dumps(self._meta, indent=2))
         self._build()
-        self.save()
-
-    def query(self, text: str, topk=5):
-        if self.vectorizer is None or (self.faiss_index is None and self.nn is None):
-            return []
-        q = self.vectorizer.transform([text]).astype("float32").toarray()
-        if _HAVE_FAISS:
-            D, I = self.faiss_index.search(self._normalize(q), topk)
-            sims = D[0].tolist()
-            idxs = I[0].tolist()
+    def update_label(self, doc_id: str, fibo_class_uri: str):
+        for m in self._meta:
+            if m['doc_id']==doc_id: m['fibo_class_uri']=fibo_class_uri
+        self.meta_path.write_text(json.dumps(self._meta, indent=2))
+    def search(self, text: str, topk: int=8):
+        if self._X is None or (self._faiss is None and self._nn is None): return []
+        q = self._vectorizer.transform([text]).astype('float32').toarray()
+        if HAVE_FAISS:
+            D,I = self._faiss.search(self._normalize(q), min(topk,len(self._meta)))
+            sims = D[0].tolist(); idxs = I[0].tolist()
         else:
-            dists, idxs = self.nn.kneighbors(q, n_neighbors=min(topk, len(self.doc_ids)))
-            sims = [1 - d for d in dists[0]]
-        out = []
-        for sim, idx in zip(sims, idxs):
-            if idx < 0 or idx >= len(self.doc_ids):
-                continue
-            out.append({"doc_id": self.doc_ids[idx], "similarity": float(sim)})
+            dists, idxs = self._nn.kneighbors(q, n_neighbors=min(topk,len(self._meta)))
+            sims = [1-d for d in dists[0]]
+        out=[]; 
+        for sim,idx in zip(sims,idxs):
+            if idx<0 or idx>=len(self._meta): continue
+            m=self._meta[idx]; out.append({'doc_id':m['doc_id'],'sim':float(sim),'fibo_class_uri':m.get('fibo_class_uri')})
         return out
+    def suggest_class(self, doc_id: str, topk_neighbors: int=8):
+        m = next((m for m in self._meta if m['doc_id']==doc_id), None)
+        if not m: return {'suggestion':None,'votes':{}}
+        nbrs = self.search(m['text'], topk_neighbors)
+        votes={}
+        for n in nbrs:
+            uri = n.get('fibo_class_uri')
+            if not uri: continue
+            votes[uri]=votes.get(uri,0.0)+float(n['sim'])
+        if not votes: return {'suggestion':None,'votes':{}}
+        suggestion = max(votes.items(), key=lambda x:x[1])[0]
+        return {'suggestion':suggestion,'votes':votes}

@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body { margin:0; font-family:system-ui, sans-serif; }
+    #viz { width:100%; height:100%; }
+    .node circle { stroke:#333; stroke-width:1px; fill:#ddd; }
+    .node text { font-size:12px; pointer-events:none; }
+    .link { stroke:#aaa; stroke-width:1px; }
+    #status { position:absolute; top:8px; left:8px; background:#fff8; padding:6px 10px; border-radius:6px; font-size:12px; }
+  </style>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+<div id="status">Click a node to select a class</div>
+<div id="viz"></div>
+<script>
+(function(){
+  const data = window.graphData || {nodes:[], links:[]};
+  const apiBase = window.apiBase || "http://127.0.0.1:8000";
+  const w = document.documentElement.clientWidth*0.85;
+  const h = 560;
+
+  const svg = d3.select("#viz").append("svg").attr("width", w).attr("height", h);
+
+  const simulation = d3.forceSimulation(data.nodes)
+    .force("link", d3.forceLink(data.links).id(d=>d.id).distance(80))
+    .force("charge", d3.forceManyBody().strength(-240))
+    .force("center", d3.forceCenter(w/2, h/2));
+
+  const link = svg.append("g").attr("class","links")
+    .selectAll("line").data(data.links).enter().append("line").attr("class","link");
+
+  const node = svg.append("g").attr("class","nodes")
+    .selectAll("g").data(data.nodes).enter().append("g").attr("class","node").call(drag(simulation));
+
+  node.append("circle").attr("r", 10);
+  node.append("title").text(d => d.label || d.id);
+  node.append("text").attr("x", 12).attr("y", 4).text(d => d.label || d.id);
+
+  simulation.on("tick", () => {
+    link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+    node.attr("transform", d => `translate(${d.x},${d.y})`);
+  });
+
+  function drag(sim){
+    function dragstarted(event,d){ if(!event.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; }
+    function dragged(event,d){ d.fx=event.x; d.fy=event.y; }
+    function dragended(event,d){ if(!event.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }
+    return d3.drag().on("start",dragstarted).on("drag",dragged).on("end",dragended);
+  }
+
+  async function notifySelection(uri){
+    try{
+      const r = await fetch(apiBase + "/ui/set_selection?uri=" + encodeURIComponent(uri), {method:"POST"});
+      const j = await r.json();
+      document.getElementById("status").textContent = "Selected: " + uri.split("/").pop();
+    }catch(e){
+      document.getElementById("status").textContent = "Selection failed";
+    }
+  }
+
+  node.on("click", (event, d) => { notifySelection(d.id); });
+})();
+</script>
+</body>
+</html>
