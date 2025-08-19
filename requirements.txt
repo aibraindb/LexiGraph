@@ -1,0 +1,11 @@
+streamlit>=1.35
+paddleocr>=2.7.0
+paddlepaddle==2.6.1
+pdfplumber
+PyMuPDF
+numpy
+pandas
+Pillow
+scikit-learn
+networkx
+rdflib

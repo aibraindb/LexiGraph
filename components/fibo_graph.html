@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui, sans-serif;background:#fff}
+    #toolbar{padding:8px;background:#f6f6f6;border-bottom:1px solid #ddd;display:flex;gap:8px;align-items:center}
+    .btn{padding:6px 10px;border:1px solid #bbb;background:#fff;border-radius:6px;cursor:pointer}
+    .btn:hover{background:#f0f0f0}
+    #viz{width:100%;height:calc(100% - 46px)}
+    .node circle{stroke:#333;stroke-width:1px;fill:#ddd}
+    .node text{font-size:12px;pointer-events:none}
+    .link{stroke:#aaa;stroke-width:1px}
+    .tooltip{position:absolute;pointer-events:none;background:#111;color:#fff;padding:6px 8px;border-radius:6px;font-size:12px;opacity:0;transition:opacity .1s;max-width:420px}
+  </style>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="toolbar">
+    <button id="fit" class="btn">Fit</button>
+    <button id="max" class="btn">⤢ Maximize</button>
+    <div id="status" style="margin-left:auto;color:#666;font-size:12px;">Click a node to select</div>
+  </div>
+  <div id="viz"></div>
+  <div id="tooltip" class="tooltip"></div>
+
+  <!-- JSON payloads injected by Streamlit -->
+  <script id="graph-json" type="application/json">{{GRAPH_JSON}}</script>
+  <script id="api-base" type="application/json">{{API_BASE}}</script>
+
+  <script>
+  (function(){
+    const data = JSON.parse(document.getElementById("graph-json").textContent || '{"nodes":[],"links":[]}');
+    const apiBase = JSON.parse(document.getElementById("api-base").textContent || '"http://127.0.0.1:8000"');
+    const viz = document.getElementById("viz");
+    const tip = document.getElementById("tooltip");
+
+    let w = viz.clientWidth, h = viz.clientHeight;
+    const svg = d3.select("#viz").append("svg").attr("width", w).attr("height", h);
+    const g = svg.append("g");
+
+    const zoom = d3.zoom().scaleExtent([0.2, 3]).on("zoom",(ev)=>g.attr("transform", ev.transform));
+    svg.call(zoom);
+
+    const sim = d3.forceSimulation(data.nodes)
+      .force("link", d3.forceLink(data.links).id(d=>d.id).distance(80))
+      .force("charge", d3.forceManyBody().strength(-260))
+      .force("center", d3.forceCenter(w/2, h/2));
+
+    function resize(){
+      w = viz.clientWidth; h = viz.clientHeight;
+      svg.attr("width", w).attr("height", h);
+      sim.force("center", d3.forceCenter(w/2, h/2)).alpha(0.05).restart();
+    }
+    window.addEventListener("resize", resize);
+    document.addEventListener("fullscreenchange", resize);
+
+    const link = g.append("g").selectAll("line").data(data.links).enter()
+      .append("line").attr("class","link")
+      .append("title").text(d=> d.kind==='property' ? (d.label || 'property') : 'subClassOf');
+
+    const nodes = g.append("g").selectAll("g").data(data.nodes).enter()
+      .append("g").attr("class","node")
+      .call(d3.drag()
+        .on("start",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+        .on("drag",(ev,d)=>{ d.fx=ev.x; d.fy=ev.y; })
+        .on("end",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0); d.fx=null; d.fy=null; })
+      );
+
+    nodes.append("circle").attr("r",10);
+    nodes.append("title").text(d=>d.label||d.id);
+    nodes.append("text").attr("x",12).attr("y",4).text(d=>d.label||d.id);
+
+    sim.on("tick", ()=>{
+      g.selectAll("line.link")
+        .attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+        .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+      g.selectAll("g.node").attr("transform", d=>`translate(${d.x},${d.y})`);
+    });
+
+    async function notifySelection(uri){
+      try{
+        const r = await fetch(apiBase + "/ui/set_selection?uri=" + encodeURIComponent(uri), {method:"POST"});
+        await r.json().catch(()=>{});
+        document.getElementById("status").textContent = "Selected: " + (uri.split("/").pop() || uri);
+      }catch(e){ document.getElementById("status").textContent = "Selection failed"; }
+    }
+
+    async function fetchInfo(uri){
+      try{
+        const r = await fetch(apiBase + "/fibo/nodeinfo_bulk",{
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({uris:[uri]})
+        });
+        const js = await r.json(); return js[uri] || {};
+      }catch(e){ return {}; }
+    }
+
+    nodes.on("click", (_,d)=>notifySelection(d.id));
+    nodes.on("mouseenter", async (ev,d)=>{
+      const info = await fetchInfo(d.id);
+      tip.innerHTML = `<b>${d.label}</b><br/><span style='font-size:12px;color:#ccc'>${d.id}</span><br/>
+      <div style='font-size:12px;color:#aaa'>Parents: ${(info.parents||[]).map(u=>u.split('/').pop()).join(', ')||'—'}</div>
+      <div style='font-size:12px;color:#aaa'>Children: ${(info.children||[]).map(u=>u.split('/').pop()).join(', ')||'—'}</div>`;
+      tip.style.opacity=1; tip.style.left=(ev.pageX+10)+'px'; tip.style.top=(ev.pageY+10)+'px';
+    });
+    nodes.on("mouseleave", ()=> tip.style.opacity=0);
+
+    document.getElementById("fit").onclick = ()=> svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
+    document.getElementById("max").onclick = ()=>{
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    };
+  })();
+  </script>
+</body>
+</html>
