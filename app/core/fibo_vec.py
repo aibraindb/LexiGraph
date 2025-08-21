@@ -1,102 +1,204 @@
+# app/core/fibo_vec.py
 from __future__ import annotations
 from pathlib import Path
-from typing import List, Dict
-import json, re
-from rdflib import Graph, RDFS, URIRef
-from rdflib.namespace import SKOS
+from typing import List, Dict, Optional, Tuple
+import re, json
+import joblib
+from rdflib import Graph, RDFS,RDF, URIRef
+from rdflib.namespace import SKOS, OWL
 from rdflib.util import guess_format
-
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 FALLBACK_TTL = Path("data/fibo_trimmed.ttl")
 FULL_TTL     = Path("data/fibo_full.ttl")
-INDEX_JSON   = Path("data/fibo_vec_index.json")
-MATRIX_NPZ   = Path("data/fibo_vec_matrix.npz")
+MODEL_PATH   = Path("data/fibo_vec.joblib")
+INDEX_PATH   = Path("data/fibo_index_meta.json")
+
+PARSER_TRY_ORDER = ["turtle","xml","n3","nt","trig","trix","json-ld"]
+CAMEL_RE = re.compile(r'(?<!^)(?=[A-Z])')
+
+_state: Dict[str, object] = {
+    "vectorizer": None,   # TfidfVectorizer
+    "X": None,            # sparse matrix
+    "docs": [],           # list[str] corpus texts
+    "uris": [],           # list[str] aligned URIs
+    "labels": [],         # list[str] aligned labels
+    "source": None        # str path used
+}
 
 def _ttl_path() -> Path:
     return FULL_TTL if FULL_TTL.exists() else FALLBACK_TTL
 
-def _labels_for(g: Graph, u: URIRef) -> List[str]:
-    out: List[str] = []
-    for p in (RDFS.label, SKOS.prefLabel, SKOS.altLabel):
-        for _,_,o in g.triples((u,p,None)):
-            try: out.append(str(o))
-            except: pass
-    tail = str(u).split("/")[-1]
-    if tail:
-        tail_spaced = re.sub(r"(?<!^)(?=[A-Z])", " ", tail)
-        out.extend([tail, tail_spaced])
-    # de-dup
-    seen=set(); dedup=[]
-    for t in out:
-        if t and t not in seen:
-            seen.add(t); dedup.append(t)
-    return dedup
-
-def build_fibo_vec(force: bool=False) -> Dict:
-    from scipy import sparse
-    if INDEX_JSON.exists() and MATRIX_NPZ.exists() and not force:
-        try: return json.loads(INDEX_JSON.read_text())
-        except: pass
-    path = _ttl_path()
+def _parse_graph(path: Path) -> Graph:
     g = Graph()
     fmt = guess_format(str(path)) or "turtle"
-    tried = [fmt] + [f for f in ["turtle","xml","n3","nt","trig","trix","json-ld"] if f!=fmt]
-    for f in tried:
-        try: g.parse(path, format=f); break
-        except: continue
+    tried = []
+    for f in [fmt] + [x for x in PARSER_TRY_ORDER if x != fmt]:
+        try:
+            g.parse(path, format=f)
+            return g
+        except Exception:
+            tried.append(f)
+    raise RuntimeError(f"Failed to parse {path} (tried {tried})")
 
-    classes: List[Dict] = []
-    seen = set()
-    for u,_,_ in g.triples((None, None, None)):
-        if isinstance(u, URIRef) and str(u).startswith("http"):
-            lbs = _labels_for(g, u)
-            if lbs:
-                su = str(u)
-                if su in seen: continue
-                seen.add(su)
-                classes.append({"uri": su, "labels": lbs})
+def _label_or_tail(g: Graph, u: URIRef) -> str:
+    lbl = g.value(u, RDFS.label) or g.value(u, SKOS.prefLabel)
+    if lbl:
+        try: return str(lbl)
+        except Exception: pass
+    return str(u).split("/")[-1]
 
-    docs = [" ".join(c["labels"]).lower() for c in classes]
-    if not docs:
-        raise RuntimeError("No labeled resources found in FIBO TTL: %s" % path)
+def _tokenize_for_search(g: Graph, u: URIRef) -> str:
+    txts = []
+    for p in (RDFS.label, SKOS.prefLabel, SKOS.altLabel):
+        for _,_,val in g.triples((u, p, None)):
+            try:
+                s = str(val).strip()
+                if s: txts.append(s)
+            except Exception:
+                pass
+    tail = str(u).split("/")[-1]
+    if tail:
+        txts.append(tail)
+        txts.append(CAMEL_RE.sub(" ", tail))
+    # de-dupe, lower
+    seen=set(); out=[]
+    for t in txts:
+        t=t.lower()
+        if t and t not in seen:
+            seen.add(t); out.append(t)
+    return " ".join(out)
 
-    vectorizer = TfidfVectorizer(ngram_range=(1,2), min_df=1, max_df=0.98)
+def _collect_classes(g: Graph) -> List[Tuple[str,str,str]]:
+    out=[]
+    seen=set()
+    for ctype in (OWL.Class, RDFS.Class):
+        for s,_,_ in g.triples((None, RDF.type, ctype)):
+            #                               ^^^ was RDFS.type
+            su=str(s)
+            if su in seen: continue
+            seen.add(su)
+            lab=_label_or_tail(g, s)
+            txt=_tokenize_for_search(g, s)
+            out.append((su, lab, txt))
+
+    # also include any resource that has a label/prefLabel even if not typed
+    for s,_,_ in g.triples((None, RDFS.label, None)):
+        su=str(s)
+        if su in seen:
+            continue
+        seen.add(su)
+        lab=_label_or_tail(g, s)
+        txt=_tokenize_for_search(g, s)
+        out.append((su, lab, txt))
+    return [t for t in out if t[2].strip()]
+
+
+
+def _persist():
+    MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump({
+        "vectorizer": _state["vectorizer"],
+        "X": _state["X"],
+        "uris": _state["uris"],
+        "labels": _state["labels"],
+        "source": _state["source"]
+    }, MODEL_PATH)
+    INDEX_PATH.write_text(json.dumps({
+        "count": len(_state["uris"]),
+        "source": _state["source"]
+    }))
+
+def _load_persisted() -> bool:
+    if not MODEL_PATH.exists():
+        return False
+    try:
+        blob = joblib.load(MODEL_PATH)
+        _state["vectorizer"] = blob["vectorizer"]
+        _state["X"] = blob["X"]
+        _state["uris"] = blob["uris"]
+        _state["labels"] = blob["labels"]
+        _state["source"] = blob.get("source")
+        # sanity: fitted?
+        if not hasattr(_state["vectorizer"], "idf_"):
+            return False
+        return True
+    except Exception:
+        return False
+
+def _is_fitted() -> bool:
+    vec = _state.get("vectorizer")
+    X   = _state.get("X")
+    return (vec is not None) and hasattr(vec, "idf_") and (X is not None)
+
+def build_fibo_vec(force: bool=False) -> Dict:
+    """
+    Build (or rebuild) TF-IDF index from local TTL.
+    """
+    if _is_fitted() and not force:
+        return {"status":"ok","source":_state["source"],"count":len(_state["uris"])}
+    if not force and _load_persisted():
+        return {"status":"ok","source":_state["source"],"count":len(_state["uris"])}
+
+    path = _ttl_path()
+    if not path.exists():
+        raise FileNotFoundError(f"No TTL found. Expected {FULL_TTL} or {FALLBACK_TTL}")
+
+    g = _parse_graph(path)
+    triples = _collect_classes(g)
+    if not triples:
+        raise RuntimeError("FIBO corpus is empty; cannot fit vectorizer")
+
+    uris, labels, docs = zip(*triples)
+    vectorizer = TfidfVectorizer(stop_words="english", lowercase=True, max_df=0.9)
     X = vectorizer.fit_transform(docs)
 
-    idx = {
-        "source": str(path),
-        "classes": classes,
-        "vocab": vectorizer.vocabulary_,
-        "idf": vectorizer.idf_.tolist(),
-        "shape": [int(X.shape[0]), int(X.shape[1])]
-    }
-    INDEX_JSON.write_text(json.dumps(idx))
-    sparse.save_npz(MATRIX_NPZ, X)
-    return idx
-
-def _load_vec():
-    from scipy import sparse
-    idx = json.loads(INDEX_JSON.read_text())
-    X = sparse.load_npz(MATRIX_NPZ)
-    vect = TfidfVectorizer()
-    vect.vocabulary_ = {k:int(v) for k,v in idx["vocab"].items()}
-    import numpy as np
-    vect.idf_ = np.array(idx["idf"])
-    vect._tfidf._idf_diag = None
-    return idx, vect, X
+    _state.update({
+        "vectorizer": vectorizer,
+        "X": X,
+        "docs": list(docs),
+        "uris": list(uris),
+        "labels": list(labels),
+        "source": str(path)
+    })
+    _persist()
+    return {"status":"ok","source":str(path),"count":len(uris)}
 
 def search_fibo(query: str, topk: int=10) -> List[Dict]:
-    if not INDEX_JSON.exists() or not MATRIX_NPZ.exists():
-        build_fibo_vec(force=True)
-    idx, vect, X = _load_vec()
-    q = vect.transform([query.lower()])
-    sims = cosine_similarity(q, X).flatten()
-    order = sims.argsort()[::-1][:topk]
-    out = []
-    for i in order:
-        c = idx["classes"][int(i)]
-        out.append({"uri": c["uri"], "labels": c["labels"], "score": float(sims[int(i)])})
+    """
+    Safe search: auto-builds on first use if needed.
+    """
+    if not query or not query.strip():
+        return []
+    if not _is_fitted():
+        # Try to load persisted; if still not fitted, build
+        if not _load_persisted():
+            build_fibo_vec(force=False)
+
+    vec = _state["vectorizer"]; X = _state["X"]
+    qv  = vec.transform([query])
+    # simple cosine (rows are L2-normalized by TfidfVectorizer)
+    scores = (X @ qv.T).toarray().ravel()
+    if scores.size == 0:
+        return []
+
+    idx = np.argsort(scores)[::-1][:max(1, topk)]
+    out=[]
+    for i in idx:
+        out.append({
+            "uri": _state["uris"][i],
+            "label": _state["labels"][i],
+            "score": float(scores[i])
+        })
     return out
+
+# --- CLI helper -------------------------------------------------------------
+
+if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--rebuild", action="store_true", help="Force rebuild TF-IDF index from TTL")
+    args = ap.parse_args()
+    info = build_fibo_vec(force=args.rebuild)
+    print(json.dumps(info, indent=2))
