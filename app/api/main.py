@@ -1,15 +1,15 @@
-# app/api/main.py
-from fastapi import FastAPI, UploadFile, File, Query
+from __future__ import annotations
+from fastapi import FastAPI, UploadFile, File, Form, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Dict, Any, List
+import json
 
-from app.core.fibo_vec import build_fibo_vec, search_fibo
-from app.core.fibo_attrs import get_attributes_for_class
-from app.core.pdf_text import extract_text_blocks, focused_summary
-from app.core.value_mapper import map_values_to_attributes
+from app.core.pipeline import propose_schema, apply_schema
+from app.core.fibo_vec import rebuild_fibo_index, ensure_fibo_index
+from app.core.fibo_index import build_index, get_health, get_namespaces, set_scope, search_scoped, subgraph_scoped
 
-app = FastAPI(title="LexiGraph API", version="0.1")
+app = FastAPI(title="LexiGraph API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,48 +17,56 @@ app.add_middleware(
     allow_methods=["*"], allow_headers=["*"],
 )
 
-class LinkResponse(BaseModel):
-    summary: str
-    candidates: List[dict]
+class ApplyPayload(BaseModel):
+    doc_id: str
+    schema: Dict[str, Any]
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    info = get_health()
+    try:
+        ensure_fibo_index()
+        info["fibo_vec"] = "ok"
+    except Exception as e:
+        info["fibo_vec"] = f"degraded: {e}"
+    return info
 
+# FIBO routes
 @app.post("/fibo/rebuild")
 def fibo_rebuild():
-    idx = build_fibo_vec(force=True)
-    return {"source": idx.get("source"), "classes": len(idx.get("classes", []))}
+    a = build_index(force=True)
+    b = rebuild_fibo_index()
+    return {"index": {"classes": len(a.get("classes",[]))}, "vec": b}
+
+@app.get("/fibo/namespaces")
+def fibo_namespaces():
+    return get_namespaces()
+
+@app.post("/fibo/scope")
+def fibo_scope(namespaces: List[str] = Body(default=[])):
+    return set_scope(namespaces)
 
 @app.get("/fibo/search")
-def fibo_search(q: str = Query(..., min_length=2), k: int = 10):
-    hits = search_fibo(q, topk=k)
-    return hits
+def fibo_search(q: str, limit: int = 25):
+    return search_scoped(q, limit=limit, fallback_all=True)
 
-@app.get("/fibo/attributes")
-def fibo_attributes(uri: str):
-    return get_attributes_for_class(uri)
+@app.get("/fibo/subgraph")
+def fibo_subgraph(focus: str, hops: int = 2):
+    return subgraph_scoped(focus_uri=focus, hops=hops, include_properties=True)
 
-@app.post("/extract/link", response_model=LinkResponse)
-async def extract_and_link(file: UploadFile = File(...), k: int = 10):
-    data = await file.read()
-    ext = extract_text_blocks(data)
-    summ = focused_summary(ext, max_chars=2000)
-    hits = search_fibo(summ, topk=k)
-    return {"summary": summ, "candidates": hits}
+# Pipeline
+@app.post("/pipeline/propose")
+async def pipeline_propose(file: UploadFile = File(...), topk: int = Form(5), score_floor: float = Form(0.25)):
+    fb = await file.read()
+    out = propose_schema(fb, file.filename, topk_classes=topk, score_floor=score_floor)
+    return out
 
-@app.post("/extract/map")
-async def extract_and_map(
-    file: UploadFile = File(...),
-    class_uri: str = Query(...),
-    threshold: float = 0.45,
-):
-    data = await file.read()
-    ext = extract_text_blocks(data)
-    attrs = get_attributes_for_class(class_uri)
-    mapped = map_values_to_attributes(ext["full_text"], attrs["attributes"], threshold=threshold)
-    return {
-        "attributes": attrs,
-        "mapped": mapped,
-        "coverage": {"hit": len(mapped), "total": attrs.get("count", 0)}
-    }
+@app.post("/pipeline/apply")
+async def pipeline_apply(doc_id: str = Form(...), schema: str = Form(...), file: UploadFile = File(...)):
+    fb = await file.read()
+    try:
+        schema_obj = json.loads(schema)
+    except Exception:
+        schema_obj = {"documentName": file.filename, "attributes": []}
+    out = apply_schema(doc_id, fb, schema_obj)
+    return out

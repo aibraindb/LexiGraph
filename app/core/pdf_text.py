@@ -1,59 +1,40 @@
 from __future__ import annotations
+from typing import Dict, List
 import fitz  # PyMuPDF
-import re
-from typing import Dict, List, Tuple
+import base64
 
-def extract_text_blocks(pdf_bytes: bytes) -> Dict:
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+def _page_image_b64(page: "fitz.Page", zoom: float = 1.5) -> str:
+    mat = fitz.Matrix(zoom, zoom)
+    pix = page.get_pixmap(matrix=mat, alpha=False)
+    return "data:image/png;base64," + base64.b64encode(pix.tobytes("png")).decode("ascii")
+
+def extract_text_blocks(file_bytes: bytes, zoom: float = 1.5) -> Dict:
+    doc = fitz.open(stream=file_bytes, filetype="pdf")
     pages = []
-    colon_lines = []
-    headers = []
-    kv_pairs = []
-    for pno in range(len(doc)):
-        p = doc[pno]
-        blocks = p.get_text("blocks", flags=fitz.TEXTFLAGS_TEXT)
-        blocks.sort(key=lambda b: (b[1], b[0]))
-        page_text = []
-        for (x0,y0,x1,y1,text,_bno,_type) in blocks:
-            if not text: 
+    full_text = []
+    for pno in range(doc.page_count):
+        page = doc.load_page(pno)
+        img_b64 = _page_image_b64(page, zoom=zoom)
+        d = page.get_text("dict")
+        spans_out = []
+        text_collect = []
+        for b_idx, block in enumerate(d.get("blocks", [])):
+            if block.get("type", 0) != 0:
                 continue
-            for ln in text.splitlines():
-                t = ln.strip()
-                if not t: 
-                    continue
-                page_text.append(t)
-                if ":" in t:
-                    k,v = t.split(":",1)
-                    k,k2 = k.strip(), re.sub(r"\s+"," ",k.strip())
-                    v = v.strip()
-                    if k2 and v:
-                        kv_pairs.append({"page": pno+1, "bbox": [x0,y0,x1,y1], "key": k2, "val": v})
-                        colon_lines.append(t)
-                if re.match(r"^[A-Z0-9][A-Z0-9 \-]{6,}$", t):
-                    headers.append(t)
-        pages.append({"page": pno+1, "text": "\n".join(page_text)})
-    full_text = "\n".join(p["text"] for p in pages)
-    return {
-        "pages": pages, 
-        "full_text": full_text, 
-        "colon_lines": colon_lines[:1000], 
-        "headers": headers[:120],
-        "kv_pairs": kv_pairs
-    }
-
-ANCHOR_BOOST = [
-    "case","account","invoice","lease","loan","levy","garnish","deadline","due",
-    "amount","total","balance","remit","employer","lessee","lessor","borrower",
-    "guarantor","funding","acceptance","delivery","w-2","401k","statement","guarantee"
-]
-
-def focused_summary(extract: Dict, max_chars: int = 2500) -> str:
-    parts = []
-    if extract["headers"]:
-        parts.extend(extract["headers"][:12])
-    strong = [ln for ln in extract["colon_lines"] if any(k in ln.lower() for k in ANCHOR_BOOST)]
-    parts.extend(strong[:120])
-    if extract["pages"]:
-        parts.append(extract["pages"][0]["text"][:1500])
-    s = "\n".join(parts)
-    return s[:max_chars]
+            for l_idx, line in enumerate(block.get("lines", [])):
+                for s_idx, span in enumerate(line.get("spans", [])):
+                    bbox = span.get("bbox") or line.get("bbox") or block.get("bbox")
+                    txt = (span.get("text") or "").strip()
+                    if not txt:
+                        continue
+                    spans_out.append({
+                        "bbox": [float(bbox[0]), float(bbox[1]), float(bbox[2]), float(bbox[3])],
+                        "text": txt,
+                        "block": b_idx,
+                        "line": l_idx,
+                        "span": s_idx
+                    })
+                    text_collect.append(txt)
+        pages.append({"text": "\n".join(text_collect), "image_b64": img_b64, "spans": spans_out})
+        full_text.append("\n".join(text_collect))
+    return {"pages": pages, "full_text": "\n\n".join(full_text)}

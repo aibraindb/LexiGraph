@@ -1,1 +1,11 @@
-# Placeholder TTL — upload fibo_full.ttl or keep this.
+@prefix ex: <http://example.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+ex:Document a rdfs:Class ; rdfs:label "Document" .
+ex:LoanAgreement a rdfs:Class ; rdfs:subClassOf ex:Document ; rdfs:label "Loan Agreement" .
+ex:LeaseAgreement a rdfs:Class ; rdfs:subClassOf ex:Document ; rdfs:label "Lease Agreement" .
+
+ex:principalAmount a owl:ObjectProperty ; rdfs:label "principal amount" ; rdfs:domain ex:LoanAgreement .
+ex:effectiveDate a owl:ObjectProperty ; rdfs:label "effective date" ; rdfs:domain ex:LoanAgreement .
+ex:lesseeName a owl:ObjectProperty ; rdfs:label "lessee name" ; rdfs:domain ex:LeaseAgreement .

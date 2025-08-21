@@ -1,45 +1,36 @@
 from __future__ import annotations
 from typing import Dict, List
 import re
-from collections import defaultdict
 
-def _norm(s: str) -> str:
-    return re.sub(r"[^a-z0-9]+"," ",(s or "").lower()).strip()
+MONEY = re.compile(r"(?<!\d)(?:USD\s*)?\$?\s*\d{1,3}(?:[,\s]\d{3})*(?:\.\d{2})?")
+DATE  = re.compile(r"\b(?:\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b")
+PCT   = re.compile(r"\b\d{1,2}(?:\.\d+)?%\b")
 
-def _sim(a: str, b: str) -> float:
-    A = set(_norm(a).split()); B = set(_norm(b).split())
-    if not A or not B: return 0.0
-    return len(A & B) / len(A | B)
+def _best(txt: str):
+    for rx in (MONEY, DATE, PCT):
+        m = rx.search(txt)
+        if m:
+            return m.group(0)
+    return None
 
-def kv_from_text(full_text: str) -> Dict[str, List[str]]:
-    out = defaultdict(list)
-    for ln in full_text.splitlines():
-        if ":" in ln:
-            k,v = ln.split(":",1)
-            k=k.strip(); v=v.strip()
-            if k and v:
-                out[k].append(v)
+def map_values(full_text: str, attributes: List[Dict]) -> Dict[str, Dict]:
+    txt = full_text or ""
+    lines = [ln for ln in txt.splitlines() if ln.strip()]
+    out={}
+    for a in attributes:
+        prop = a["property"]
+        labels = [l.lower() for l in a.get("labels", []) if l]
+        found=None
+        for i,ln in enumerate(lines):
+            lnl=ln.lower()
+            if any(l in lnl for l in labels if len(l)>2):
+                v = _best(ln) or (i+1<len(lines) and _best(lines[i+1]))
+                if v:
+                    found={"value":v,"confidence":0.82,"evidence":{"line":i}}
+                    break
+        if not found:
+            v=_best(txt)
+            if v:
+                found={"value":v,"confidence":0.55,"evidence":{"line":None}}
+        out[prop]=found or {"value":None,"confidence":0.0,"evidence":{}}
     return out
-
-def map_values_to_attributes(full_text: str, attributes: List[Dict], kv_pairs: List[Dict]|None=None, threshold: float=0.40) -> Dict:
-    kv = kv_from_text(full_text)
-    # also fold in structured kv_pairs (from blocks)
-    if kv_pairs:
-        for item in kv_pairs:
-            k = item["key"]; v = item["val"]
-            if k and v:
-                kv[k].append(v)
-    results = {}
-    for attr in attributes:
-        labels = attr.get("labels") or [attr["property"].split("/")[-1]]
-        best = None; bestscore = 0.0; best_val = None
-        for k,vals in kv.items():
-            for lab in labels:
-                s = _sim(k, lab)
-                if s > bestscore:
-                    bestscore = s
-                    best = k
-                    best_val = vals[0]
-        if best and bestscore >= threshold:
-            results[attr["property"]] = {"value": best_val, "match_key": best, "score": bestscore}
-    return results
