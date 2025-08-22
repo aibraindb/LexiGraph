@@ -1,0 +1,8 @@
+{
+  "class": "wf:Invoice",
+  "fields": [
+    {"name":"wf:hasInvoiceNumber","prompt":"Extract invoice number.","required":true},
+    {"name":"wf:hasInvoiceDate","prompt":"Extract invoice date (YYYY-MM-DD).","required":true},
+    {"name":"wf:hasInvoiceTotal","prompt":"Extract invoice grand total numeric value.","required":true}
+  ]
+}

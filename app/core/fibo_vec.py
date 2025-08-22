@@ -1,67 +1,79 @@
 from __future__ import annotations
-from typing import List, Dict
 from pathlib import Path
-from rdflib import Graph, RDFS, URIRef
-from rdflib.namespace import OWL, SKOS
-from rdflib.util import guess_format
-import joblib, re
+from typing import List, Dict, Any
+import json
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 DATA = Path("data")
-TTL_FULL = DATA / "fibo_full.ttl"
-TTL_TRIM = DATA / "fibo_trimmed.ttl"
-MODEL    = DATA / "fibo_vec.joblib"
+INDEX_JSON = DATA/"fibo_index.json"
+VEC_JSON   = DATA/"fibo_vec.json"
 
-def _ttl_path() -> Path:
-    return TTL_FULL if TTL_FULL.exists() else TTL_TRIM
+def _load_index() -> Dict[str, Any]:
+    if not INDEX_JSON.exists():
+        raise FileNotFoundError("No FIBO index. Run build_fibo_index first or use sidebar button.")
+    return json.loads(INDEX_JSON.read_text())
 
-def _tokenize_label(s: str) -> str:
-    s = s or ""
-    s = re.sub(r"(?<!^)(?=[A-Z])", " ", s)
-    s = s.replace("/", " ").replace("_", " ")
-    return s.lower()
+def build_fibo_vec(force: bool=False) -> Dict[str, Any]:
+    if VEC_JSON.exists() and not force:
+        try: return json.loads(VEC_JSON.read_text())
+        except Exception: pass
+    idx=_load_index()
+    classes=idx.get("classes",[])
+    texts=[]
+    uris=[]
+    for c in classes:
+        t = (c.get("label","") + " " + c.get("search_text","") + " " + c.get("uri","")).strip()
+        texts.append(t)
+        uris.append(c["uri"])
+    if not texts:
+        out={"n_classes":0,"n_terms":0}
+        VEC_JSON.write_text(json.dumps(out)); return out
+    vec=TfidfVectorizer(ngram_range=(1,2), min_df=1, max_df=1.0)
+    X = vec.fit_transform(texts)
+    out={"uris":uris, "vocabulary":vec.vocabulary_, "idf":vec.idf_.tolist()}
+    VEC_JSON.write_text(json.dumps(out))
+    return {"n_classes":len(uris), "n_terms":len(vec.vocabulary_)}
 
-def _collect_labels(g: Graph) -> List[Dict]:
-    out = []
-    class_types = {OWL.Class, RDFS.Class}
-    seen = set()
-    for ctype in class_types:
-        for s,_,_ in g.triples((None, RDFS.type, ctype)):
-            if s in seen: continue
-            seen.add(s)
-            uri = str(s)
-            labels = set()
-            for p in (RDFS.label, SKOS.prefLabel, SKOS.altLabel):
-                for _s,_p,o in g.triples((s,p,None)):
-                    try: labels.add(str(o))
-                    except: pass
-            local = uri.split("/")[-1]
-            if local: labels.add(local)
-            text = " ".join(sorted(labels))
-            out.append({"uri": uri, "label": text or local})
+def _load_vec() -> tuple[TfidfVectorizer, np.ndarray, List[str]]:
+    info=json.loads(VEC_JSON.read_text())
+    vocab=info.get("vocabulary",{})
+    idf=np.array(info.get("idf",[]), dtype=np.float64)
+    uris=info.get("uris",[])
+    vec=TfidfVectorizer(ngram_range=(1,2), min_df=1, max_df=1.0)
+    # inject vocab & idf
+    vec.vocabulary_=vocab
+    vec.fixed_vocabulary_=True
+    vec._idf_diag = None
+    def _set_idf(v):
+        from scipy import sparse
+        vec.idf_ = idf
+        vec._idf_diag = sparse.spdiags(idf, diags=0, m=len(idf), n=len(idf))
+        return v
+    # monkey patch a flag we toggle after first transform
+    vec._lexi_idf_ready = False
+    vec._lexi_set_idf = _set_idf
+    return vec, idf, uris
+
+def search_fibo(query_text: str, top_k: int=5) -> List[Dict[str,Any]]:
+    idx=_load_index()
+    classes=idx.get("classes",[])
+    if not VEC_JSON.exists():
+        build_fibo_vec(force=True)
+    vec, idf, uris = _load_vec()
+    docs_texts=[]
+    for c in classes:
+        t = (c.get("label","") + " " + c.get("search_text","") + " " + c.get("uri","")).strip()
+        docs_texts.append(t)
+    X_docs = vec.fit_transform(docs_texts)  # safe even with fixed vocabulary
+    if not getattr(vec, "_lexi_idf_ready", False):
+        vec._lexi_set_idf(True)
+        vec._lexi_idf_ready=True
+    q = vec.transform([query_text or ""])
+    sims = cosine_similarity(q, X_docs).ravel()
+    order = np.argsort(-sims)[:max(1, top_k)]
+    out=[]
+    for i in order:
+        out.append({"uri": classes[i]["uri"], "label": classes[i]["label"], "score": float(sims[i])})
     return out
-
-def rebuild_fibo_index() -> Dict:
-    g = Graph()
-    fmt = guess_format(str(_ttl_path())) or "turtle"
-    g.parse(_ttl_path(), format=fmt)
-    rows = _collect_labels(g)
-    corpus = [_tokenize_label(r["label"]) for r in rows]
-    vec = TfidfVectorizer(min_df=1, max_df=1.0, token_pattern=r"(?u)\b\w[\w\-/\.]+\b")
-    X = vec.fit_transform(corpus)
-    joblib.dump({"rows": rows, "vec": vec, "X": X}, MODEL)
-    return {"classes": len(rows), "features": X.shape[1]}
-
-def ensure_fibo_index():
-    if not MODEL.exists():
-        rebuild_fibo_index()
-
-def fibo_search(query: str, topk: int = 5) -> List[Dict]:
-    ensure_fibo_index()
-    blob = joblib.load(MODEL)
-    rows, vec, X = blob["rows"], blob["vec"], blob["X"]
-    qv = vec.transform([_tokenize_label(query or "")])
-    sims = cosine_similarity(X, qv).ravel()
-    idx = sims.argsort()[::-1][:max(1, topk)]
-    return [{"uri": rows[i]["uri"], "label": rows[i]["label"], "score": float(sims[i])} for i in idx]
