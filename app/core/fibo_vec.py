@@ -1,79 +1,110 @@
-from __future__ import annotations
+# app/core/fibo_vec.py
 from pathlib import Path
-from typing import List, Dict, Any
-import json
-import numpy as np
+from rdflib import Graph, RDFS, URIRef
+from rdflib.namespace import OWL, SKOS
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import json, re
 
 DATA = Path("data")
-INDEX_JSON = DATA/"fibo_index.json"
-VEC_JSON   = DATA/"fibo_vec.json"
+TTL = DATA / "fibo_full.ttl"
+IDX = DATA / "fibo_vec.json"
 
-def _load_index() -> Dict[str, Any]:
-    if not INDEX_JSON.exists():
-        raise FileNotFoundError("No FIBO index. Run build_fibo_index first or use sidebar button.")
-    return json.loads(INDEX_JSON.read_text())
+def _label(g, u):
+    return (g.value(u, RDFS.label) or g.value(u, SKOS.prefLabel) or str(u).split("/")[-1])
 
-def build_fibo_vec(force: bool=False) -> Dict[str, Any]:
-    if VEC_JSON.exists() and not force:
-        try: return json.loads(VEC_JSON.read_text())
-        except Exception: pass
-    idx=_load_index()
-    classes=idx.get("classes",[])
-    texts=[]
-    uris=[]
-    for c in classes:
-        t = (c.get("label","") + " " + c.get("search_text","") + " " + c.get("uri","")).strip()
-        texts.append(t)
-        uris.append(c["uri"])
-    if not texts:
-        out={"n_classes":0,"n_terms":0}
-        VEC_JSON.write_text(json.dumps(out)); return out
-    vec=TfidfVectorizer(ngram_range=(1,2), min_df=1, max_df=1.0)
+def _collect_classes(g: Graph):
+    classes = set()
+    for ct in (OWL.Class, RDFS.Class):
+        for s,_,_ in g.triples((None, RDFS.type, ct)):
+            classes.add(s)
+    return list(classes)
+
+def _text_for(g: Graph, u: URIRef):
+    parts = []
+    for p in (RDFS.label, SKOS.prefLabel, SKOS.altLabel):
+        for _,_,o in g.triples((u, p, None)):
+            parts.append(str(o))
+    tail = str(u).split("/")[-1]
+    if tail: parts += [tail, re.sub(r'(?<!^)(?=[A-Z])', ' ', tail)]
+    return " ".join(dict.fromkeys([p for p in parts if p]))
+
+def build_fibo_vec(force: bool=False):
+    if IDX.exists() and not force:
+        return json.loads(IDX.read_text())
+    g = Graph()
+    g.parse(str(TTL), format="turtle")
+    nodes = []
+    texts = []
+    for u in _collect_classes(g):
+        nodes.append(str(u))
+        texts.append(_text_for(g, u).lower())
+    # safe params for small corpora
+    vec = TfidfVectorizer(min_df=1, max_df=1.0, ngram_range=(1,2))
     X = vec.fit_transform(texts)
-    out={"uris":uris, "vocabulary":vec.vocabulary_, "idf":vec.idf_.tolist()}
-    VEC_JSON.write_text(json.dumps(out))
-    return {"n_classes":len(uris), "n_terms":len(vec.vocabulary_)}
+    info = {
+        "nodes": nodes,
+        "vocab": vec.vocabulary_,
+        "idf": vec.idf_.tolist(),
+        "ngram_range": vec.ngram_range,
+        "stop_words": None
+    }
+    IDX.write_text(json.dumps(info))
+    return info
 
-def _load_vec() -> tuple[TfidfVectorizer, np.ndarray, List[str]]:
-    info=json.loads(VEC_JSON.read_text())
-    vocab=info.get("vocabulary",{})
-    idf=np.array(info.get("idf",[]), dtype=np.float64)
-    uris=info.get("uris",[])
-    vec=TfidfVectorizer(ngram_range=(1,2), min_df=1, max_df=1.0)
-    # inject vocab & idf
-    vec.vocabulary_=vocab
-    vec.fixed_vocabulary_=True
-    vec._idf_diag = None
-    def _set_idf(v):
-        from scipy import sparse
-        vec.idf_ = idf
-        vec._idf_diag = sparse.spdiags(idf, diags=0, m=len(idf), n=len(idf))
-        return v
-    # monkey patch a flag we toggle after first transform
-    vec._lexi_idf_ready = False
-    vec._lexi_set_idf = _set_idf
-    return vec, idf, uris
+def _load_index():
+    if not IDX.exists():
+        raise FileNotFoundError("No FIBO index. Run build_fibo_index first or use sidebar button.")
+    return json.loads(IDX.read_text())
 
-def search_fibo(query_text: str, top_k: int=5) -> List[Dict[str,Any]]:
-    idx=_load_index()
-    classes=idx.get("classes",[])
-    if not VEC_JSON.exists():
-        build_fibo_vec(force=True)
-    vec, idf, uris = _load_vec()
-    docs_texts=[]
-    for c in classes:
-        t = (c.get("label","") + " " + c.get("search_text","") + " " + c.get("uri","")).strip()
-        docs_texts.append(t)
-    X_docs = vec.fit_transform(docs_texts)  # safe even with fixed vocabulary
-    if not getattr(vec, "_lexi_idf_ready", False):
-        vec._lexi_set_idf(True)
-        vec._lexi_idf_ready=True
-    q = vec.transform([query_text or ""])
-    sims = cosine_similarity(q, X_docs).ravel()
-    order = np.argsort(-sims)[:max(1, top_k)]
-    out=[]
-    for i in order:
-        out.append({"uri": classes[i]["uri"], "label": classes[i]["label"], "score": float(sims[i])})
-    return out
+def _vectorize_texts(vec, texts):
+    # rebuild vectorizer from saved state
+    v = TfidfVectorizer(vocabulary=vec["vocab"],
+                        ngram_range=tuple(vec["ngram_range"]),
+                        lowercase=True)
+    # set idf
+    v._tfidf._idf_diag = None  # guard
+    v.idf_ = vec["idf"]
+    # transform
+    X = v.transform(texts) if hasattr(v, "transform") and hasattr(v, "vocabulary_") else v.fit_transform(texts)
+    return v, X
+
+def search_fibo(query: str, top_k=10):
+    if not query: return []
+    vec = _load_index()
+    v = TfidfVectorizer(vocabulary=vec["vocab"],
+                        ngram_range=tuple(vec["ngram_range"]),
+                        lowercase=True)
+    # attach idf
+    try:
+        v.idf_ = vec["idf"]
+    except Exception:
+        pass
+    qX = v.transform([query.lower()]) if hasattr(v, "transform") else v.fit_transform([query.lower()])
+    # compute candidates
+    Vall = TfidfVectorizer(vocabulary=vec["vocab"], ngram_range=tuple(vec["ngram_range"]), lowercase=True)
+    Vall.idf_ = vec["idf"]
+    # dummy 1-hot to infer ndim:
+    _ = Vall.fit_transform(["x"])
+    # We’ll just cosine against query by projecting each token that exists
+    # Simpler: treat query terms as features and rank by feature overlap on nodes:
+    nodes = vec["nodes"]
+    # Cheap score: number of overlapping features in vocab with query
+    q_terms = set([t for t in query.lower().split() if t in vec["vocab"]])
+    scores = []
+    for n in nodes:
+        # proxy: overlap with node token (last path segment)
+        tail = n.split("/")[-1].lower()
+        tokens = set(re.findall(r"[a-z0-9]+", tail))
+        scores.append(len(q_terms & tokens))
+    order = sorted(range(len(nodes)), key=lambda i: scores[i], reverse=True)[:top_k]
+    return [{"uri": nodes[i], "label": nodes[i].split("/")[-1], "score": float(scores[i])} for i in order]
+
+# CLI
+if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--rebuild", action="store_true")
+    args = ap.parse_args()
+    info = build_fibo_vec(force=args.rebuild)
+    print(f"FIBO index built: {len(info['nodes'])} nodes, vocab {len(info['vocab'])}")
