@@ -1,0 +1,400 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TARGET="ui/ocr_tree_canvas.py"
+
+if [ ! -f "$TARGET" ]; then
+  echo "❌ $TARGET not found. Run this from the repo root where $TARGET exists."
+  exit 1
+fi
+
+TS="$(date +%Y%m%d-%H%M%S)"
+cp "$TARGET" "${TARGET}.bak.${TS}"
+echo "🗄  Backed up ${TARGET} -> ${TARGET}.bak.${TS}"
+
+cat > "$TARGET" <<'PYCODE'
+import io
+import json
+from dataclasses import dataclass, asdict
+from typing import List, Dict, Any, Optional, Tuple
+
+import streamlit as st
+from PIL import Image
+import numpy as np
+
+# Project imports (must exist in your repo)
+from app.core.ocr_indexer import index_pdf_bytes   # returns pages: List[{"img": PIL.Image, "lines":[{"bbox_img":(x0,y0,x1,y1),"text":str,"li":int}], ...}]
+# from app.core.pdf_text import extract_text_blocks  # optional
+
+try:
+    from streamlit_drawable_canvas import st_canvas
+    HAS_CANVAS = True
+except Exception:
+    HAS_CANVAS = False
+    st.warning("streamlit-drawable-canvas not available; canvas disabled.")
+
+st.set_page_config(page_title="LexiGraph • OCR Tree + Canvas", layout="wide")
+
+# ---------- Edit model ----------
+@dataclass
+class Edit:
+    page: int
+    bbox_img: Tuple[float, float, float, float]  # (x0,y0,x1,y1)
+    tag: str = ""
+    text: str = ""
+
+# ---------- Fabric helpers ----------
+def _fabric_rect(left, top, width, height, stroke="#ff0000", fill="rgba(0,0,0,0)", selectable=True, name=None):
+    return {
+        "type": "rect",
+        "left": float(left),
+        "top": float(top),
+        "width": float(width),
+        "height": float(height),
+        "fill": fill,
+        "stroke": stroke,
+        "strokeWidth": 2,
+        "selectable": selectable,
+        "name": name or "",
+    }
+
+def make_initial_drawing(page_idx: int,
+                         page_img: Image.Image,
+                         line_boxes: List[Dict[str, Any]],
+                         show_all=False,
+                         selected_line: Optional[int]=None,
+                         edits: Optional[List[Dict[str, Any]]]=None) -> Dict[str, Any]:
+    """
+    Fabric.js JSON for st_canvas.initial_drawing (must be a dict).
+    """
+    objects = []
+
+    # draw all OCR line boxes (light red)
+    if show_all:
+        for ln in line_boxes:
+            x0, y0, x1, y1 = [float(v) for v in ln["bbox_img"]]
+            objects.append(_fabric_rect(x0, y0, x1 - x0, y1 - y0,
+                                        stroke="#ff7b7b", selectable=False,
+                                        name=f"ocr_{ln['li']}"))
+
+    # highlight selected line (orange)
+    if selected_line is not None and 0 <= selected_line < len(line_boxes):
+        sl = line_boxes[selected_line]
+        x0, y0, x1, y1 = [float(v) for v in sl["bbox_img"]]
+        objects.append(_fabric_rect(x0, y0, x1 - x0, y1 - y0,
+                                    stroke="#ff8800", selectable=True,
+                                    name=f"sel_{sl['li']}"))
+
+    # user edits for this page (green), index them with stable names so we can persist transform updates
+    if edits:
+        for i, ed in enumerate(edits):
+            if ed.get("page") != page_idx:
+                continue
+            x0, y0, x1, y1 = [float(v) for v in ed["bbox_img"]]
+            objects.append(_fabric_rect(x0, y0, x1 - x0, y1 - y0,
+                                        stroke="#22aa22", selectable=True,
+                                        name=f"edit_{i}"))
+
+    return {
+        "version": "4.6.0",
+        "objects": objects,
+        "background": "#ffffff",
+    }
+
+# ---------- Geometry ----------
+def _contains(b: Tuple[float,float,float,float], x: float, y: float) -> bool:
+    x0,y0,x1,y1 = b
+    return (x0 <= x <= x1) and (y0 <= y <= y1)
+
+def _rect_of(obj: Dict[str,Any]) -> Tuple[float,float,float,float]:
+    x = float(obj.get("left", 0.0))
+    y = float(obj.get("top", 0.0))
+    w = float(obj.get("width", 0.0))
+    h = float(obj.get("height", 0.0))
+    return (x, y, x+w, y+h)
+
+# ---------- Session state ----------
+def _ensure_state():
+    st.session_state.setdefault("pages", [])            # [{"img": PIL.Image, "lines":[...]}]
+    st.session_state.setdefault("cur_page", 0)
+    st.session_state.setdefault("selected_li", None)    # selected line index per page
+    st.session_state.setdefault("edits", [])           # list of Edit dicts
+    st.session_state.setdefault("show_all_boxes", True)
+    st.session_state.setdefault("undo_stack", [])
+    st.session_state.setdefault("redo_stack", [])
+    # last picked point (for diagnostic)
+    st.session_state.setdefault("last_pick_xy", None)
+
+_ensure_state()
+
+# ---------- Sidebar ----------
+st.sidebar.header("Controls")
+uploaded = st.sidebar.file_uploader("Upload a PDF (scanned or digital)", type=["pdf"])
+if uploaded:
+    try:
+        pdf_bytes = uploaded.read()
+        pages = index_pdf_bytes(pdf_bytes)
+        if not pages:
+            st.error("No pages indexed. OCR/PDF parsing returned empty.")
+        else:
+            st.session_state["pages"] = pages
+            st.session_state["cur_page"] = 0
+            st.session_state["selected_li"] = None
+            st.session_state["edits"] = []
+            st.session_state["undo_stack"].clear()
+            st.session_state["redo_stack"].clear()
+            st.success(f"Loaded {len(pages)} page(s).")
+    except Exception as e:
+        st.exception(e)
+
+if st.session_state["pages"]:
+    st.sidebar.write(f"Pages: {len(st.session_state['pages'])}")
+    new_page = st.sidebar.number_input("Page", min_value=1, max_value=len(st.session_state["pages"]),
+                                       value=st.session_state["cur_page"]+1, step=1)
+    if new_page-1 != st.session_state["cur_page"]:
+        st.session_state["cur_page"] = new_page-1
+        st.session_state["selected_li"] = None
+
+    st.session_state["show_all_boxes"] = st.sidebar.checkbox("Show all OCR boxes", value=st.session_state["show_all_boxes"])
+
+    colu = st.sidebar.columns(2)
+    if colu[0].button("Undo") and st.session_state["edits"]:
+        ed = st.session_state["edits"].pop()
+        st.session_state["redo_stack"].append(ed)
+
+    if colu[1].button("Redo") and st.session_state["redo_stack"]:
+        ed = st.session_state["redo_stack"].pop()
+        st.session_state["edits"].append(ed)
+
+# ---------- Layout ----------
+left, right = st.columns([0.35, 0.65])
+
+# ---------- LEFT: Document tree ----------
+with left:
+    st.subheader("Document Tree")
+    if not st.session_state["pages"]:
+        st.info("Upload a PDF to see OCR structure.")
+    else:
+        pg = st.session_state["pages"][st.session_state["cur_page"]]
+        lines = pg.get("lines", [])
+
+        st.markdown(f"**Page {st.session_state['cur_page']+1}** — {len(lines)} lines")
+
+        for ln in lines:
+            li = ln["li"]
+            label = (ln["text"] or "").strip().replace("\n", " ")
+            if len(label) > 80:
+                label = label[:77] + "…"
+            selected = (st.session_state["selected_li"] == li)
+            cols = st.columns([0.1, 0.8, 0.1])
+            with cols[0]:
+                if st.button("🔎", key=f"sel_{li}", help="Select / focus this line"):
+                    st.session_state["selected_li"] = li
+            with cols[1]:
+                st.write(("**" if selected else "") + label + ("**" if selected else ""))
+            with cols[2]:
+                if st.button("➕", key=f"addedit_{li}", help="Add a green edit box on this line"):
+                    x0,y0,x1,y1 = [float(v) for v in ln["bbox_img"]]
+                    ed = Edit(page=st.session_state["cur_page"], bbox_img=(x0,y0,x1,y1), tag="", text=ln.get("text",""))
+                    st.session_state["edits"].append(asdict(ed))
+                    st.session_state["undo_stack"].append({"op":"add", "edit":asdict(ed)})
+                    st.session_state["redo_stack"].clear()
+
+# ---------- RIGHT: Canvas ----------
+with right:
+    st.subheader("Page Viewer / Annotator")
+
+    if not HAS_CANVAS:
+        st.error("Canvas not available. Install: pip install streamlit-drawable-canvas==0.9.3")
+    elif not st.session_state["pages"]:
+        st.info("Upload a PDF to annotate.")
+    else:
+        page_idx = st.session_state["cur_page"]
+        page = st.session_state["pages"][page_idx]
+        page_img: Image.Image = page["img"]
+        page_lines: List[Dict[str, Any]] = page.get("lines", [])
+
+        selected_li = st.session_state["selected_li"]
+        show_all_boxes = st.session_state["show_all_boxes"]
+        page_edits = [e for e in st.session_state["edits"] if e.get("page")==page_idx]
+
+        mode = st.radio("Mode", ["Pick (click to select)", "Draw new box", "Move/Resize (transform)"], horizontal=True)
+        drawing_mode = {"Pick (click to select)":"point",
+                        "Draw new box":"rect",
+                        "Move/Resize (transform)":"transform"}[mode]
+
+        initial_drawing = make_initial_drawing(
+            page_idx=page_idx,
+            page_img=page_img,
+            line_boxes=page_lines,
+            show_all=show_all_boxes,
+            selected_line=selected_li,
+            edits=page_edits,
+        )
+
+        canvas_res = st_canvas(
+            key=f"canvas_{page_idx}",
+            width=page_img.width,
+            height=page_img.height,
+            background_image=page_img,
+            drawing_mode=drawing_mode,
+            stroke_width=2,
+            stroke_color="#22aa22",
+            update_streamlit=True,
+            initial_drawing=initial_drawing,
+        )
+
+        objs = (canvas_res.json_data or {}).get("objects", []) if canvas_res is not None else []
+
+        # --- PICK MODE: click creates a point; map it to a line or edit rect and select it ---
+        if drawing_mode == "point" and objs:
+            # find a circle (point) and the latest one
+            pts = [o for o in objs if o.get("type") in ("circle","triangle","path","polygon","polyline","ellipse","line","point")]
+            # st_canvas draws a small circle for point; we’ll try circle first
+            circ = next((o for o in reversed(objs) if o.get("type")=="circle"), None)
+            if circ:
+                # fabric circle: left, top are top-left of bounding box; radius is 'radius' or 'rx'
+                cx = float(circ.get("left", 0.0)) + float(circ.get("radius", circ.get("rx", 2)))
+                cy = float(circ.get("top", 0.0))  + float(circ.get("radius", circ.get("ry", 2)))
+                st.session_state["last_pick_xy"] = (cx, cy)
+
+                # 1) check if inside a user edit → highlight by selecting temp "selected_li" = None and mark one edit row
+                # (for now we prefer selecting OCR line if matched; else select edit)
+                chosen_line = None
+                for ln in page_lines:
+                    if _contains(tuple(ln["bbox_img"]), cx, cy):
+                        chosen_line = ln["li"]
+                        break
+                if chosen_line is not None:
+                    st.session_state["selected_li"] = chosen_line
+                    st.success(f"Selected OCR line #{chosen_line} from click")
+                else:
+                    # pick nearest edit rect
+                    best_i, best_area = None, None
+                    for i, ed in enumerate(page_edits):
+                        bx = tuple(ed["bbox_img"])
+                        if _contains(bx, cx, cy):
+                            area = (bx[2]-bx[0])*(bx[3]-bx[1])
+                            if best_area is None or area < best_area:
+                                best_area = area
+                                best_i = i
+                    if best_i is not None:
+                        # move selected_li to an OCR line overlapping that edit (if any), else just leave selection None
+                        st.info(f"Clicked inside edit box #{best_i+1}")
+                    else:
+                        st.warning("Click did not land inside any box")
+
+        # --- DRAW MODE: persist last drawn rect as a new edit ---
+        if drawing_mode == "rect" and objs:
+            newest = objs[-1]
+            if newest.get("type") == "rect":
+                try:
+                    x = float(newest.get("left", 0.0))
+                    y = float(newest.get("top", 0.0))
+                    w = float(newest.get("width", 0.0))
+                    h = float(newest.get("height", 0.0))
+                    bbox = (x, y, x+w, y+h)
+                    ed = Edit(page=page_idx, bbox_img=bbox, tag="", text="")
+                    if not st.session_state["edits"] or st.session_state["edits"][-1].get("bbox_img") != bbox:
+                        st.session_state["edits"].append(asdict(ed))
+                        st.session_state["undo_stack"].append({"op":"add", "edit":asdict(ed)})
+                        st.session_state["redo_stack"].clear()
+                        st.success("➕ Box added")
+                except Exception:
+                    pass
+
+        # --- TRANSFORM MODE: read back green edit_* objects and persist moved/resized rects ---
+        if drawing_mode == "transform" and objs and page_edits:
+            # Build name->object rect map
+            obj_map = {o.get("name"): o for o in objs if o.get("type")=="rect" and str(o.get("name","")).startswith("edit_")}
+            # Update session_state edits by index
+            changed = 0
+            for i, ed in enumerate(page_edits):
+                name = f"edit_{i}"
+                o = obj_map.get(name)
+                if not o:
+                    continue
+                new_rect = _rect_of(o)
+                if tuple(ed["bbox_img"]) != new_rect:
+                    # write-through to global edits
+                    for j, e in enumerate(st.session_state["edits"]):
+                        if e.get("page")==page_idx and e.get("bbox_img")==ed.get("bbox_img"):
+                            st.session_state["edits"][j]["bbox_img"] = new_rect
+                            changed += 1
+                            break
+            if changed:
+                st.info(f"Saved {changed} transform update(s).")
+
+        # Inspector for selected line
+        if selected_li is not None and 0 <= selected_li < len(page_lines):
+            ln = page_lines[selected_li]
+            st.markdown("**Selected Line**")
+            st.code(ln.get("text",""))
+            x0,y0,x1,y1 = ln["bbox_img"]
+            st.write(f"bbox: ({x0:.1f}, {y0:.1f}, {x1:.1f}, {y1:.1f})")
+
+        # Editable table of saved edits for this page
+        st.markdown("**Saved Edits (this page)**")
+        if page_edits:
+            for i, ed in enumerate(page_edits):
+                cols = st.columns([0.15, 0.65, 0.2])
+                with cols[0]:
+                    st.write(f"#{i+1}")
+                with cols[1]:
+                    ed["tag"] = st.text_input(f"Tag #{i+1}", value=ed.get("tag",""), key=f"tag_{page_idx}_{i}")
+                    ed["text"] = st.text_input(f"Text #{i+1}", value=ed.get("text",""), key=f"text_{page_idx}_{i}")
+                with cols[2]:
+                    if st.button("🗑️ Delete", key=f"del_{page_idx}_{i}"):
+                        # remove from global edits by identity match (page + bbox match)
+                        to_remove = None
+                        for j, e in enumerate(st.session_state["edits"]):
+                            if e.get("page")==page_idx and e.get("bbox_img")==ed.get("bbox_img"):
+                                to_remove = j
+                                break
+                        if to_remove is not None:
+                            removed = st.session_state["edits"].pop(to_remove)
+                            st.session_state["undo_stack"].append({"op":"del", "edit":removed})
+                            st.success("🗑️ Removed")
+                        st.experimental_rerun()
+            # Reconcile global edits with per-row updates
+            new_all = []
+            for e in st.session_state["edits"]:
+                if e.get("page") != page_idx:
+                    new_all.append(e)
+                else:
+                    match = next((r for r in page_edits if r.get("bbox_img")==e.get("bbox_img")), None)
+                    new_all.append(match if match else e)
+            st.session_state["edits"] = new_all
+        else:
+            st.caption("No edits yet — draw a green box, add one from a line with ➕, or Pick to select.")
+
+# ---------- Save / Load edits ----------
+st.divider()
+colA, colB = st.columns(2)
+with colA:
+    if st.button("💾 Save edits to file"):
+        try:
+            data = {
+                "edits": st.session_state["edits"],
+                "num_pages": len(st.session_state.get("pages", [])),
+            }
+            st.download_button("Download JSON", data=json.dumps(data, indent=2), file_name="lexigraph_edits.json", mime="application/json")
+        except Exception as e:
+            st.exception(e)
+
+with colB:
+    up = st.file_uploader("Load edits JSON", type=["json"], key="load_edits_json")
+    if up:
+        try:
+            loaded = json.loads(up.read().decode("utf-8"))
+            if isinstance(loaded.get("edits"), list):
+                st.session_state["edits"] = loaded["edits"]
+                st.success(f"Loaded {len(st.session_state['edits'])} edits.")
+        except Exception as e:
+            st.exception(e)
+
+PYCODE
+
+echo "✅ Upgraded $TARGET with two-way linking + transform persistence."
+echo
+echo "Run: streamlit run ui/ocr_tree_canvas.py"

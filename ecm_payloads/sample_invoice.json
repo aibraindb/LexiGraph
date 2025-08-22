@@ -1,0 +1,30 @@
+{
+  "document_type": "invoice",
+  "fields": [
+    {
+      "id": "inv_number",
+      "label": "Invoice Number",
+      "value": "499295"
+    },
+    {
+      "id": "inv_date",
+      "label": "Invoice Date",
+      "value": "12/27/2023"
+    },
+    {
+      "id": "account",
+      "label": "Account Number",
+      "value": "WF-1-3"
+    },
+    {
+      "id": "bill_to",
+      "label": "Bill To",
+      "value": "WELLS FARGO EQUIPMENT FINANCE\n800 WALNUT ST 4TH FLOOR\nDES MOINES, IA 50309"
+    },
+    {
+      "id": "total",
+      "label": "Invoice Total",
+      "value": "$16,445.46"
+    }
+  ]
+}

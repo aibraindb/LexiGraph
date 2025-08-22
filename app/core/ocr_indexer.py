@@ -1,88 +1,79 @@
-from dataclasses import dataclass, asdict
-from typing import List, Dict, Any
+# app/core/ocr_indexer.py
 import io
-import fitz  # PyMuPDF
+from dataclasses import dataclass
+from typing import List, Dict, Any
 from PIL import Image
-import base64
+import fitz  # PyMuPDF
+
 
 @dataclass
-class Word:
-    text: str
-    bbox: List[float]  # [x0,y0,x1,y1]
+class OCRIndex:
+    pages: List[Dict[str, Any]]
 
-@dataclass
-class Line:
-    text: str
-    bbox: List[float]
-    words: List[Word]
 
-@dataclass
-class Block:
-    bbox: List[float]
-    lines: List[Line]
+def _page_image_bytes(page: fitz.Page, scale: float = 2.0) -> bytes:
+    mat = fitz.Matrix(scale, scale)
+    pix = page.get_pixmap(matrix=mat)
+    mode = "RGBA" if pix.alpha else "RGB"
+    img = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
 
-@dataclass
-class PageIndex:
-    number: int
-    width: int
-    height: int
-    image_b64: str     # PNG base64
-    blocks: List[Block]
 
-def _pix_to_b64(pix: fitz.Pixmap) -> str:
-    img_bytes = pix.tobytes("png")
-    return base64.b64encode(img_bytes).decode("ascii")
+def index_pdf_bytes(pdf_bytes: bytes) -> OCRIndex:
+    """Return a structured OCR index with image bytes + normalized blocks/lines/words."""
+    doc = fitz.open("pdf", pdf_bytes)
+    pages: List[Dict[str, Any]] = []
 
-def index_pdf_bytes(pdf_bytes: bytes, max_w: int = 1400) -> Dict[str, Any]:
-    """
-    Returns: {"pages": [ PageIndex... ], "meta": {...} }
-    Uses PyMuPDF text extraction only (no Tesseract).
-    """
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    pages: List[PageIndex] = []
+    for pnum, page in enumerate(doc):
+        # Page image
+        img_bytes = _page_image_bytes(page)
 
-    for i, page in enumerate(doc):
-        # Render page image (scaled so width <= max_w)
-        zoom = min(2.0, max(1.0, max_w / max(page.rect.width, 1)))
-        mat = fitz.Matrix(zoom, zoom)
-        pix = page.get_pixmap(matrix=mat, alpha=False)
-        image_b64 = _pix_to_b64(pix)
-        scale = zoom  # how coords were scaled for the image
+        # Rich structure
+        raw = page.get_text("rawdict")  # blocks -> lines -> spans
+        blocks = []
+        lines = []
 
-        blocks: List[Block] = []
-        for b in page.get_text("blocks"):  # (x0, y0, x1, y1, "text", block_no, block_type)
-            x0, y0, x1, y1, *_ = b
-            # gather lines+words inside this block via "dict" mode to keep structure
-            b_lines: List[Line] = []
-            block_rect = fitz.Rect(x0, y0, x1, y1)
-            # clip to the block so we only fetch its own lines
-            d = page.get_text("dict", clip=block_rect)
-            for ld in d.get("blocks", []):
-                for sp in ld.get("lines", []):
-                    wds: List[Word] = []
-                    line_text_parts = []
-                    # words in this line
-                    for wd in sp.get("spans", []):
-                        txt = wd.get("text", "")
-                        line_text_parts.append(txt)
-                        # PyMuPDF spans have bbox in device space; convert to page rect
-                        rx0, ry0, rx1, ry1 = wd["bbox"]
-                        wds.append(Word(text=txt, bbox=[rx0, ry0, rx1, ry1]))
-                    if not wds:
-                        continue
-                    l_text = " ".join([t for t in line_text_parts if t])
-                    ly0 = min(w.bbox[1] for w in wds); lx0 = min(w.bbox[0] for w in wds)
-                    ly1 = max(w.bbox[3] for w in wds); lx1 = max(w.bbox[2] for w in wds)
-                    b_lines.append(Line(text=l_text, bbox=[lx0, ly0, lx1, ly1], words=wds))
-            blocks.append(Block(bbox=[x0, y0, x1, y1], lines=b_lines))
+        for bi, b in enumerate(raw.get("blocks", [])):
+            bbox_b = b.get("bbox", [0, 0, 0, 0])
+            blocks.append({
+                "id": f"p{pnum}_b{bi}",
+                "bbox": bbox_b,
+            })
+            for li, ln in enumerate(b.get("lines", [])):
+                # concatenate all span texts of the line
+                text = "".join(s.get("text", "") for s in ln.get("spans", []))
+                bbox_l = ln.get("bbox", [0, 0, 0, 0])
+                lines.append({
+                    "id": f"p{pnum}_b{bi}_l{li}",
+                    "text": text.strip(),
+                    "bbox": bbox_l,
+                    "block_index": bi,
+                    "line_index": li,
+                })
 
-        pages.append(PageIndex(
-            number=i+1,
-            width=pix.width,
-            height=pix.height,
-            image_b64=image_b64,
-            blocks=blocks
-        ))
+        # Words (PyMuPDF returns tuples)
+        words_list = []
+        for wi, w in enumerate(page.get_text("words")):
+            # (x0, y0, x1, y1, "word", block_no, line_no, word_no)
+            x0, y0, x1, y1, word, bno, lno, wno = w
+            words_list.append({
+                "id": f"p{pnum}_w{wi}",
+                "text": word,
+                "bbox": [x0, y0, x1, y1],
+                "block_index": int(bno),
+                "line_index": int(lno),
+                "word_index": int(wno),
+            })
 
-    meta = {"num_pages": len(pages)}
-    return {"pages": [asdict(p) for p in pages], "meta": meta}
+        pages.append({
+            "number": pnum,
+            "image": img_bytes,             # ✅ Streamlit can display this
+            "size": [float(page.rect.width), float(page.rect.height)],
+            "blocks": blocks,               # ✅ normalized dicts
+            "lines": lines,                 # ✅ normalized dicts
+            "words": words_list,            # ✅ normalized dicts
+        })
+
+    return OCRIndex(pages=pages)

@@ -1,0 +1,224 @@
+import os, io, json, base64, time
+from pathlib import Path
+from typing import Tuple, Optional
+
+import streamlit as st
+from PIL import Image, ImageDraw
+from streamlit_drawable_canvas import st_canvas
+
+from app.core.ocr_indexer import index_pdf_bytes
+from app.core.models import OCRIndex, Page, Block, Line, todict
+from app.core.value_mapper import find_best_line
+
+st.set_page_config(page_title="Lexi OCR Tree v2", layout="wide")
+
+DATA_DIR = Path("data")
+SESSION_DIR = DATA_DIR / "sessions"
+OCR_DIR = DATA_DIR / "ocr"
+SESSION_DIR.mkdir(parents=True, exist_ok=True)
+OCR_DIR.mkdir(parents=True, exist_ok=True)
+
+st.title("Lexi — OCR Tree + Lasso (ECM‑mock, HITL)")
+
+# ---------------- Sidebar ----------------
+with st.sidebar:
+    st.header("ECM mock & persistence")
+    ecm_file = st.selectbox("ECM payload", ["ecm_payloads/sample_invoice.json"])
+    autoload = st.checkbox("Auto‑jump to fields on select", value=True)
+    show_all_boxes = st.checkbox("Show ALL line boxes", value=True)
+    canvas_mode = st.radio("Canvas mode", ["Select/Move", "Draw (rect)"], horizontal=True)
+    st.divider()
+    st.markdown("**Persistence**")
+    save_btn = st.button("Save session JSON")
+
+uploaded = st.file_uploader("Upload PDF", type=["pdf"])
+
+if "session" not in st.session_state:
+    st.session_state.session = {"doc_id": None, "ocr": None, "edits": []}
+session = st.session_state.session
+
+def _load_image_b64(b64: str) -> Image.Image:
+    return Image.open(io.BytesIO(base64.b64decode(b64))).convert("RGB")
+
+def _doc_id(name: str) -> str:
+    base = Path(name).stem.replace(" ", "_")
+    ts = int(time.time())
+    return f"{base}-{ts:x}"
+
+# Column layout
+c1, c2 = st.columns([1, 2], gap="large")
+
+# ---------------- Document Tree ----------------
+with c1:
+    st.subheader("Document Tree")
+    if uploaded:
+        if session["doc_id"] is None:
+            session["doc_id"] = _doc_id(uploaded.name)
+            pdf_bytes = uploaded.read()
+            ocr = index_pdf_bytes(pdf_bytes)
+            session["ocr"] = todict(ocr)
+            # persist OCR
+            (OCR_DIR / f"{session['doc_id']}.json").write_text(json.dumps(session["ocr"]))
+
+        ocr = session["ocr"]
+        pages = ocr["pages"]
+        page_options = list(range(1, len(pages)+1))
+        page_num = st.number_input("Page", min_value=1, max_value=len(pages), value=1, step=1)
+        p = pages[page_num-1]
+        st.caption(f"Page size: {p['width']} × {p['height']}")
+
+        blocks = p["blocks"]
+        if blocks:
+            blk_idx = st.selectbox("Block",
+                                   options=list(range(len(blocks))),
+                                   format_func=lambda i: f"Block {i} bbox={tuple(round(x,1) for x in blocks[i]['bbox'])} (lines={len(blocks[i]['lines'])})")
+            blk = blocks[blk_idx]
+            lines = blk["lines"]
+            if lines:
+                ln_idx = st.selectbox("Line",
+                                      options=list(range(len(lines))),
+                                      index=0,
+                                      format_func=lambda i: f"{i}: {lines[i]['text'][:80]}" )
+                ln = lines[ln_idx]
+                st.caption(f"Line bbox (pdf coords): {tuple(round(x,1) for x in ln['bbox'])}")
+                if st.button("Use this line bbox for selected field"):
+                    # attach to a pseudo 'selected_field' in session
+                    session.setdefault("selected_field", {"id":"manual"})
+                    session["selected_field"]["mapping"] = {"page": page_num, "block": blk_idx, "line": ln_idx, "bbox": ln["bbox"]}
+                    st.success("Attached current line bbox to selected field (manual).")
+            else:
+                st.info("No lines in this block.")
+        else:
+            st.info("No text blocks on this page.")
+
+    else:
+        st.info("Upload a PDF to begin.")
+
+    st.subheader("Edit History (selected)")
+    st.json(session.get("edits", [])[-5:] if session.get("edits") else [])
+
+# ---------------- Page Viewer ----------------
+with c2:
+    st.subheader("Page Viewer / Annotator")
+    if uploaded and session.get("ocr"):
+        ocr = session["ocr"]
+        images = ocr.get("images", {})
+        p_img = images.get(str(page_num)) or images.get(page_num)
+        if isinstance(p_img, str):
+            pil = _load_image_b64(p_img)
+        else:
+            st.warning("No page image — fallback rendering.")
+            pil = Image.new("RGB", (p["width"], p["height"]), "white")
+
+        # Prepare initial rectangles
+        init_rects = []
+        if show_all_boxes:
+            for bi, blk in enumerate(p["blocks"]):
+                for li, ln in enumerate(blk["lines"]):
+                    x0,y0,x1,y1 = ln["bbox"]
+                    # scale pdf coords to image coords
+                    sx = pil.width / p["width"]
+                    sy = pil.height / p["height"]
+                    init_rects.append({
+                        "type":"rect",
+                        "left": x0*sx, "top": (p["height"]-y1)*sy,
+                        "width": (x1-x0)*sx, "height": (y1-y0)*sy,
+                        "stroke": "red", "fillOpacity": 0.0, "name": f"l:{page_num}:{bi}:{li}"
+                    })
+
+        drawing_mode = "transform" if canvas_mode=="Select/Move" else "rect"
+        canvas_res = st_canvas(
+            fill_color="rgba(0, 0, 255, 0.1)",
+            stroke_width=2,
+            stroke_color="#22c55e" if drawing_mode=="rect" else "#0ea5e9",
+            background_image=pil,
+            update_streamlit=True,
+            height=int(pil.height),
+            width=int(pil.width),
+            drawing_mode=drawing_mode,
+            initial_drawing=init_rects,
+            key=f"canvas-{page_num}"
+        )
+
+        # Detect selection or new rect
+        if canvas_res.json_data is not None:
+            objs = canvas_res.json_data.get("objects", [])
+            # When in transform mode, changed objects have 'version' updates.
+            # We'll take the last object drawn/selected as candidate.
+            if objs:
+                last = objs[-1]
+                if last.get("type") == "rect":
+                    left, top = last.get("left",0), last.get("top",0)
+                    width, height = last.get("width",0), last.get("height",0)
+                    # Map back to PDF coords
+                    sx = p["width"]/pil.width
+                    sy = p["height"]/pil.height
+                    x0 = left * sx
+                    y1_img = (top + height) * sy
+                    y0_img = top * sy
+                    # Convert from image space (y down) to PDF space (y up)
+                    y0_pdf = p["height"] - y1_img
+                    y1_pdf = p["height"] - y0_img
+                    bbox_pdf = [x0, y0_pdf, x0 + width*sx, y1_pdf]
+                    st.caption(f"Selected bbox (pdf): {tuple(round(v,1) for v in bbox_pdf)}")
+                    if st.button("Save edit for selected field"):
+                        sf = session.get("selected_field") or {"id":"ad_hoc"}
+                        session["edits"].append({
+                            "field_id": sf.get("id","ad_hoc"),
+                            "page": page_num,
+                            "bbox": bbox_pdf,
+                            "method": "draw"
+                        })
+                        st.success("Edit saved.")
+
+    else:
+        st.info("Upload a PDF to view.")
+
+st.divider()
+st.subheader("ECM Fields (mock)")
+if uploaded:
+    try:
+        payload = json.loads(Path(ecm_file).read_text())
+        fields = payload.get("fields", [])
+        cols = st.columns(2)
+        for i, f in enumerate(fields):
+            col = cols[i % 2]
+            with col:
+                if st.button(f"↘ Jump: {f['label']}", key=f"jump_{f['id']}"):
+                    # pick best line
+                    ocr = session["ocr"]
+                    from app.core.models import OCRIndex, Page, Block, Line
+                    # reconstruct objects lightly
+                    pages = []
+                    for p in ocr["pages"]:
+                        blocks = []
+                        for b in p["blocks"]:
+                            lines = [Line(text=l["text"], bbox=tuple(l["bbox"])) for l in b["lines"]]
+                            blocks.append(Block(bbox=tuple(b["bbox"]), lines=lines))
+                        pages.append(Page(number=p["number"], width=p["width"], height=p["height"], blocks=blocks))
+                    ocr_obj = OCRIndex(pages=pages, images={})
+
+                    best = find_best_line(ocr_obj, f.get("value",""))
+                    if best:
+                        pg, bi, li, score = best
+                        session["selected_field"] = f
+                        # Attach mapping for convenience
+                        session["selected_field"]["mapping"] = {
+                            "page": pg, "block": bi, "line": li,
+                            "bbox": ocr["pages"][pg-1]["blocks"][bi]["lines"][li]["bbox"],
+                            "score": score
+                        }
+                        st.success(f"Matched '{f['label']}' → page {pg} block {bi} line {li} (score={score:.2f})")
+                    else:
+                        st.warning(f"No good match for {f['label']}")
+        # Show current selected mapping
+        if session.get("selected_field", {}).get("mapping"):
+            st.write("Selected field mapping:")
+            st.json(session["selected_field"]["mapping"])
+    except Exception as e:
+        st.error(f"Failed to load ECM mock: {e}")
+
+# Save session
+if save_btn and session.get("doc_id"):
+    (SESSION_DIR / f"{session['doc_id']}.json").write_text(json.dumps(session, indent=2))
+    st.success(f"Saved → data/sessions/{session['doc_id']}.json")

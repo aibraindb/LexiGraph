@@ -1,1 +1,0 @@
-streamlit-drawable-canvas==0.9.3

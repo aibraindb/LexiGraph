@@ -1,0 +1,19 @@
+# Core
+streamlit==1.36.0
+streamlit-drawable-canvas==0.9.3
+pillow==10.3.0
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.5.2
+scipy==1.13.1
+
+# OCR / PDF
+pymupdf==1.24.9
+pdfminer.six==20231228
+pdf2image==1.17.0
+
+# RDF / FIBO
+rdflib==7.0.0
+
+# Utils
+joblib==1.4.2
