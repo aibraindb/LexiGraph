@@ -1,0 +1,148 @@
+import io, base64, json
+from pathlib import Path
+
+import streamlit as st
+from streamlit_drawable_canvas import st_canvas
+from PIL import Image
+
+from app.core.ocr_indexer import index_pdf_bytes, page_to_dict, OCRIndex
+
+st.set_page_config(page_title="Lexi — OCR Tree & Canvas (HITL)", layout="wide")
+st.title("📄 Lexi — OCR Page Viewer / Annotator")
+
+# --- Sidebar controls
+st.sidebar.header("Upload & Settings")
+uploaded = st.sidebar.file_uploader("PDF", type=["pdf"])
+min_chars = st.sidebar.slider("Min chars per line", 1, 10, 2, 1)
+merge_tol = st.sidebar.slider("Line merge tolerance (px)", 1, 10, 3, 1)
+
+if "ocr_idx" not in st.session_state:
+    st.session_state["ocr_idx"] = None
+if "cur_page" not in st.session_state:
+    st.session_state["cur_page"] = 0
+if "objects" not in st.session_state:
+    # canvas objects cache per page index
+    st.session_state["objects"] = {}
+
+def _png_to_bgimg(png_bytes: bytes) -> Image.Image:
+    return Image.open(io.BytesIO(png_bytes))
+
+def _to_canvas_rect(line, page_w, page_h, active=False):
+    # st_canvas expects left, top, width, height in pixels (we feed 1:1 from image pixels)
+    x0, y0, x1, y1 = line["bbox"]
+    w = max(1, x1 - x0)
+    h = max(1, y1 - y0)
+    return {
+        "type": "rect",
+        "left": float(x0),
+        "top": float(y0),
+        "width": float(w),
+        "height": float(h),
+        "stroke": "#ff2d55" if not active else "#3b82f6",
+        "fill": "rgba(255,45,85,0.08)" if not active else "rgba(59,130,246,0.12)",
+        "strokeWidth": 2,
+        "uuid": line["id"],
+        "text": line.get("text","")
+    }
+
+def _build_tree(pg_dict):
+    # very simple tree: just lines for now (can nest into blocks later)
+    lines = pg_dict.get("lines", [])
+    st.subheader("Document Tree (current page)")
+    if not lines:
+        st.info("No lines detected.")
+        return None
+    # selection
+    options = []
+for i, ln in enumerate(lines):
+    txt = (ln.get("text", "") or "")[:60].replace("\n", " ")
+    options.append(f"[{i+1}] {txt}")
+    idx = st.selectbox("Lines", options=options, index=0, key=f"line_select_{st.session_state['cur_page']}")
+    sel = lines[int(idx.split(']')[0][1:]) - 1]
+    return sel
+
+def _draw_canvas(pg_dict, initial_rects, background_img):
+    # Canvas sized to page image
+    W, H = background_img.size
+    canvas_res = st_canvas(
+        fill_color="rgba(255, 165, 0, 0.0)",
+        stroke_width=2,
+        stroke_color="#ff2d55",
+        background_image=background_img,
+        update_streamlit=True,
+        height=H,
+        width=W,
+        drawing_mode="transform",  # move/resize existing rects
+        initial_drawing={"objects": initial_rects, "background": "#FFFFFF"},
+        key=f"canvas_{st.session_state['cur_page']}",
+    )
+    return canvas_res
+
+def _persist_canvas(page_idx, canvas_res):
+    if canvas_res and canvas_res.json_data:
+        try:
+            jd = json.loads(canvas_res.json_data)
+            st.session_state["objects"][page_idx] = jd.get("objects", [])
+        except Exception:
+            pass
+
+# --- Main
+col_left, col_right = st.columns([0.33, 0.67])
+
+with col_left:
+    st.header("Pages")
+    if uploaded:
+        try:
+            idx: OCRIndex = index_pdf_bytes(uploaded.read(), min_chars_in_line=min_chars, line_merge_tol=merge_tol)
+            st.session_state["ocr_idx"] = idx
+            st.success(f"Indexed {len(idx.pages)} page(s).")
+        except Exception as e:
+            st.error(f"OCR index failed: {e}")
+    else:
+        st.info("Upload a PDF to begin.")
+
+    if st.session_state["ocr_idx"]:
+        pages = st.session_state["ocr_idx"].pages
+        st.session_state["cur_page"] = st.number_input("Page", 1, len(pages), 1, 1) - 1
+
+        # Build tree (line list)
+        pg_dict = page_to_dict(pages[st.session_state["cur_page"]])
+        selected_line = _build_tree(pg_dict)
+    else:
+        pages = []
+        selected_line = None
+
+with col_right:
+    st.header("Page Viewer / Annotator")
+
+    if not pages:
+        st.info("Waiting for PDF…")
+    else:
+        pg = pages[st.session_state["cur_page"]]
+        bg = _png_to_bgimg(pg.image_bytes) if pg.image_bytes else Image.new("RGB", (800,1000), "white")
+        pg_dict = page_to_dict(pg)
+
+        # Build initial rects (highlight selected)
+        stored = st.session_state["objects"].get(st.session_state["cur_page"])
+        if stored is None:
+            rects = []
+            for ln in pg_dict.get("lines", []):
+                rects.append(_to_canvas_rect(ln, pg.width, pg.height,
+                                             active=(selected_line and ln["id"]==selected_line["id"])))
+        else:
+            rects = stored
+
+        canvas_res = _draw_canvas(pg_dict, rects, bg)
+        _persist_canvas(st.session_state["cur_page"], canvas_res)
+
+        # Two-way link: clicking a line re-renders with active style next rerun.
+        if selected_line:
+            st.caption(f"Selected: {selected_line['id']} — “{selected_line.get('text','')[:120]}”")
+
+# Save current page objects to disk (optional hook)
+out_dir = Path("data/ocr_cache")
+out_dir.mkdir(parents=True, exist_ok=True)
+if st.session_state.get("ocr_idx"):
+    pid = st.session_state["cur_page"]
+    objs = st.session_state["objects"].get(pid, [])
+    (out_dir / f"page_{pid+1:03d}.json").write_text(json.dumps(objs, indent=2))

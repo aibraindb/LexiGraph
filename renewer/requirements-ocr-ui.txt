@@ -1,0 +1,6 @@
+streamlit==1.36.0
+streamlit-drawable-canvas==0.9.3
+pdfplumber==0.11.4
+Pillow==10.3.0
+scikit-learn==1.5.2
+numpy>=1.26,<3
