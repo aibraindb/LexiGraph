@@ -1,0 +1,28 @@
+{
+  "docs": [
+    {
+      "name": "deposit-account-agreement",
+      "url": "https://www.wellsfargo.com/assets/pdf/small-business/agreement.pdf"
+    },
+    {
+      "name": "direct-deposit-guide",
+      "url": "https://www.wellsfargo.com/assets/pdf/personal/checking/set-up-direct-deposit-CNS3519.pdf"
+    },
+    {
+      "name": "auto-autopay-authorization",
+      "url": "https://www.wellsfargo.com/assets/pdf/personal/help/automatic-payments-form.pdf"
+    },
+    {
+      "name": "ach-authorization-dealer",
+      "url": "https://www.wellsfargo.com/assets/pdf/commercial/industry/auto-dealerships/ach-authorization.pdf"
+    },
+    {
+      "name": "credit-card-agreement",
+      "url": "https://files.consumerfinance.gov/a/assets/credit-card-agreements/pdf/Wells_Fargo_Bank/Wells_Fargo_Visa_Signature_Card.pdf"
+    },
+    {
+      "name": "wfa-1099-how-to-read",
+      "url": "https://www.wellsfargoadvisors.com/pdf/how-to-read.pdf"
+    }
+  ]
+}

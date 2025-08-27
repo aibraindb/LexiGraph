@@ -1,0 +1,38 @@
+{
+  "deposit-account-agreement.pdf": {
+    "sha256": "670cf2f7047cf68bbafaa1c0eb19a9522caeee844abdc2047195e8e0e76f7cf9",
+    "url": "https://www.wellsfargo.com/assets/pdf/small-business/agreement.pdf",
+    "bytes": 668077,
+    "ts": 1756327106
+  },
+  "direct-deposit-guide.pdf": {
+    "sha256": "b50c8187e6828be45c601572907b7e074f1f7a26812037cf056236cda97023fe",
+    "url": "https://www.wellsfargo.com/assets/pdf/personal/checking/set-up-direct-deposit-CNS3519.pdf",
+    "bytes": 182062,
+    "ts": 1756327106
+  },
+  "auto-autopay-authorization.pdf": {
+    "sha256": "b5b6f61b8b802d5266df316b586b5eef298f726a231534e12e7d7215e18329d8",
+    "url": "https://www.wellsfargo.com/assets/pdf/personal/help/automatic-payments-form.pdf",
+    "bytes": 263540,
+    "ts": 1756327107
+  },
+  "ach-authorization-dealer.pdf": {
+    "sha256": "6321787f66af41f8ef34ef4b55c7e5539e676f155edff3bbeb5eb3c8534849c3",
+    "url": "https://www.wellsfargo.com/assets/pdf/commercial/industry/auto-dealerships/ach-authorization.pdf",
+    "bytes": 86806,
+    "ts": 1756327108
+  },
+  "credit-card-agreement.pdf": {
+    "sha256": "e36f75e364f559d0dd11b75c6e4a9e485be2d69d4f5bceef93b5d2ba503cd15c",
+    "url": "https://files.consumerfinance.gov/a/assets/credit-card-agreements/pdf/Wells_Fargo_Bank/Wells_Fargo_Visa_Signature_Card.pdf",
+    "bytes": 483928,
+    "ts": 1756327108
+  },
+  "wfa-1099-how-to-read.pdf": {
+    "sha256": "9d40e5ba9d398a2f5483d8dab05c4be0991bb61f76d91389db789f434aaa606e",
+    "url": "https://www.wellsfargoadvisors.com/pdf/how-to-read.pdf",
+    "bytes": 232350,
+    "ts": 1756327109
+  }
+}

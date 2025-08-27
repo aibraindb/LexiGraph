@@ -1,0 +1,4307 @@
+{
+  "nodes": [
+    {
+      "id": "data/samples/wells/direct-deposit-guide.pdf",
+      "kind": "document"
+    },
+    {
+      "id": "data/samples/wells/ach-authorization-dealer.pdf",
+      "kind": "document"
+    },
+    {
+      "id": "data/samples/wells/deposit-account-agreement.pdf",
+      "kind": "document"
+    },
+    {
+      "id": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "kind": "document"
+    },
+    {
+      "id": "data/samples/wells/credit-card-agreement.pdf",
+      "kind": "document"
+    },
+    {
+      "id": "data/samples/wells/auto-autopay-authorization.pdf",
+      "kind": "document"
+    },
+    {
+      "id": "Amount:1",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:2",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:9",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:010",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:3",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:15",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:4",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-800",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-869",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-355",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:7",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-333",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-179",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:5",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-772",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-121",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-325",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-077",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:8",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-877",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-577",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-312",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-751",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-470",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-888",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-767",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-673",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-878",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-570",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-838",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-277",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-829",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-483",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:202",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:351",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Date:5/1/2024",
+      "kind": "entity",
+      "etype": "Date"
+    },
+    {
+      "id": "AccountRef:account information",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account that",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\ndocuments",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account opening",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Check",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account number",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account\nNote",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Number",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "Org:Wells Fargo",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:bank",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:Bank",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Amount:-99",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:06",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:12",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:19",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:201",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Date:06/12/19",
+      "kind": "entity",
+      "etype": "Date"
+    },
+    {
+      "id": "AccountRef:account\ninformation",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Manager",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "Org:Dealer",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:Auto",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:Wells\nFargo",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:dealer",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Amount:6",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:10",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:11",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:13",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:14",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:20",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:22",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:25",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:27",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:29",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:31",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:36",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:38",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:40",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:42",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:44",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-225",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-593",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:711",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:699",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:972",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:28",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-699",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:30",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$1",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-1",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$50",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:120",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:770",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:554",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:80",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-774",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:0",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:772",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:00",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$400",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-4",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$225",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$5,525",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:59",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:60",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:24",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$99,999",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:16",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:17",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$1,010",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$5,000",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:18",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:911",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:800",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:877",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-226",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-569",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:609",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-292",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-727",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:21",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$500",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:23",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:45",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:90",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$100",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:26",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:200",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$1.00",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:365",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-12",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:32",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:33",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:0.00",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-9",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-8",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:34",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:35",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:70",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:72",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:73",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:203",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:75",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:74",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:37",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-778",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-787",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$10,000",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$700.00",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:39",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$1,000,000",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:91",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$5,000,000",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:180",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:41",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:43",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$0.00",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Date:11/6/2024",
+      "kind": "entity",
+      "etype": "Date"
+    },
+    {
+      "id": "AccountRef:Account\nAgreement",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Agreement",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account with",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account owner",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account application",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account service",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account consent",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account open",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Services",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Information",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account upon",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account includes",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account during",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account setoff",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account when",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account titled",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account established",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account except",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account ownership",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account does",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account-related",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\napplication",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account until",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Owners",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account type",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account statement",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account owners",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account before",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account will",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Available",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account available",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account repeatedly",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account would",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\navailable",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nStep",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account made",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account transfers",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account having",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account history",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account customers",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account eligibility",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account linked",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account covers",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account services",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account agreement",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account balances",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account balance",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Funding",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nlinked",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account even",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account statements",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account through",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nstatement",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nerroneous",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account require",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nthrough",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nManual",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nPhone",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account alerts",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\n1-800-869-3557",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nusing",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account inquiry",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account using",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account within",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:accountants",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account access",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account fraud",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account restraint",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account provide",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account relationship",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account activity",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account listed",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account without",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account statements",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account resulting",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account funds",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account payable",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nwith",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account each",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account based",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account from",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account fees",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account must",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\ncourt",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account closes",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account: When",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nElectronic",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account Savings",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account becomes",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nfunds",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account escheats",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account holder",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nregard",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account prohibit",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account analysis",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account after",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account which",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "Org:wellsfargo",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:Customer",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:customer",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:Merchant",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:merchant",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:WELLS FARGO",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:corporation",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Amount:109",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:550",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$10",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:121",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:894",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:104",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:106",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-777",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-477",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-405",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:541",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-104",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-041",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:620",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-600",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:522",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-741",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "AccountRef:account clearing",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "Org:LLC",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Org:Advisors",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Amount:$25.00",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:103",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:47",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:503",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-642",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-472",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-031",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:8.21",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:145",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-351",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-052",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:100",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-844",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-309",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-004",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-419",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-128",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:586",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:938",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:9.24",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:22.24",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:20.74",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:22.74",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$5",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$12.50",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$20",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$40",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:$29",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:03",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:3.25",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:12.49",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:25.49",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:23.99",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:25.99",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:199",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:399",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:801",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Date:3/31/2021",
+      "kind": "entity",
+      "etype": "Date"
+    },
+    {
+      "id": "Date:03/31/2021",
+      "kind": "entity",
+      "etype": "Date"
+    },
+    {
+      "id": "AccountRef:Account Agreements",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account: Section",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account holder",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account only",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account balance",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account similar",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account information",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account:\nCash",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account default",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account list",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account will",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account Holder",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account history",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account performance",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account status",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account limits",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account number",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account\nPricing",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "Org:BANK",
+      "kind": "entity",
+      "etype": "Org"
+    },
+    {
+      "id": "Amount:915",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-01",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:551",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-497",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-160",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-289",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Amount:-60",
+      "kind": "entity",
+      "etype": "Amount"
+    },
+    {
+      "id": "Date:11/26/24",
+      "kind": "entity",
+      "etype": "Date"
+    },
+    {
+      "id": "AccountRef:Account type",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account\nreferenced",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account referenced",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:Account payoff",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "AccountRef:account early",
+      "kind": "entity",
+      "etype": "AccountRef"
+    },
+    {
+      "id": "Org:auto",
+      "kind": "entity",
+      "etype": "Org"
+    }
+  ],
+  "edges": [
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:2",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:010",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:3",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:15",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:4",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-869",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-355",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:7",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-333",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-179",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-772",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-121",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-325",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-077",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:8",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-877",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-577",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-312",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-751",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-470",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-888",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-767",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-673",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-878",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-570",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-838",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-277",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-829",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:-483",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:202",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Amount:351",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Date:5/1/2024",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:account information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:account that",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:account\ndocuments",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:account opening",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:Account Check",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:account number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:Account\nNote",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "AccountRef:Account Number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Org:Wells Fargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Org:bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "Org:Bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:-99",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:06",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:12",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:19",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:201",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Amount:9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Date:06/12/19",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "AccountRef:Account Number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "AccountRef:account number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "AccountRef:account information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "AccountRef:account\ninformation",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "AccountRef:Account Manager",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:Dealer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:Wells Fargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:Bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:Auto",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:Wells\nFargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "Org:dealer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:6",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:202",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:4",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:2",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:8",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:10",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:11",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:12",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:13",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:14",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:20",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:22",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:25",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:27",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:29",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:31",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:36",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:38",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:40",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:42",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:44",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-869",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-355",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:7",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-225",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-593",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:711",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:699",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:972",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:28",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-699",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:3",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:30",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$50",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:120",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:770",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:554",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:80",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-774",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:0",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:772",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-772",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$400",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-4",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$225",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$5,525",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:59",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:60",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:24",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:15",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$99,999",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:16",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:17",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$1,010",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$5,000",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:18",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:911",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:877",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-226",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-569",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:609",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-292",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-727",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:19",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:21",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$500",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:23",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:45",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:90",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$100",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:26",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:200",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$1.00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:365",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-12",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:32",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:33",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:0.00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-8",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:34",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:35",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:70",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:72",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:73",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:203",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:75",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:74",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:37",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-778",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:-787",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$10,000",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$700.00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:39",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$1,000,000",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:91",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$5,000,000",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:180",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:41",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:43",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:$0.00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Amount:201",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Date:11/6/2024",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account\nAgreement",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Agreement",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account with",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account owner",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account application",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account service",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account consent",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account open",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Services",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account that",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account upon",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account includes",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account during",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account setoff",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account when",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account titled",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account established",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account except",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account ownership",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account does",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account-related",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\napplication",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account until",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Owners",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account type",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account statement",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account owners",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account before",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account will",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Available",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account available",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account repeatedly",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account would",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\navailable",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nStep",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account made",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account transfers",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account having",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account history",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account customers",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account opening",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account eligibility",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account linked",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account covers",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account services",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account agreement",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account balances",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account balance",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Funding",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nlinked",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account even",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account statements",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account through",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nstatement",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account Number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nerroneous",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account require",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nthrough",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nManual",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nPhone",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account alerts",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\n1-800-869-3557",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nusing",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account inquiry",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account using",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account within",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:accountants",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account access",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account fraud",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account restraint",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account provide",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account relationship",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account activity",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account listed",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account without",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:Account statements",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account resulting",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account funds",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account payable",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nwith",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account each",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account based",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account from",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account fees",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account must",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\ncourt",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account closes",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account: When",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nElectronic",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account Savings",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account becomes",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nfunds",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account escheats",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account holder",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account\nregard",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account prohibit",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account analysis",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account after",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "AccountRef:account which",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:Wells Fargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:Bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:wellsfargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:Customer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:customer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:Merchant",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:merchant",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:WELLS FARGO",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "Org:corporation",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:202",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:4",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:109",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:17",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:550",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:201",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:7",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:$100",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:$10",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:3",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:2",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:6",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:121",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:894",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:104",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:0",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:106",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-877",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-777",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-477",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:8",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-829",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-405",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:541",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-104",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-041",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:620",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:26",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-600",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:522",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:-741",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Amount:203",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "AccountRef:account that",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "AccountRef:account clearing",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "AccountRef:account statements",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Org:Wells Fargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Org:LLC",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Org:Bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Org:customer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Org:Advisors",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "b": "Org:bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:12",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:4",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:10",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:11",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:19",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:21",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:31",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:32",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:33",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:34",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:2",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:3",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:202",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:25",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$25.00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:103",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:47",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:503",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:06",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:6",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-642",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-472",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:0",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:7",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:8",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:13",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:365",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:14",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:15",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:16",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:17",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:18",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:20",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-031",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:22",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:23",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:180",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:8.21",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:24",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:26",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:27",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:28",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:145",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-351",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:29",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:30",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:522",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-052",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:60",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:90",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:100",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$50",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:36",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-844",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-309",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-004",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-419",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-226",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:-128",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:586",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:938",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:9.24",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:22.24",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:20.74",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:22.74",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$1.00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$10",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$12.50",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$20",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$40",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:$29",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:03",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:3.25",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:12.49",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:25.49",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:23.99",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:25.99",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:199",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:399",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Amount:801",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Date:3/31/2021",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Date:03/31/2021",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account Agreement",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account Agreements",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account: Section",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account holder",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account only",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account balance",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account similar",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:account information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account:\nCash",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:account default",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:account linked",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account list",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:account using",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account will",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account Holder",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account history",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account performance",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account status",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account limits",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:account with",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:Account\nPricing",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "AccountRef:account will",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:Wells Fargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:Customer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:Bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:wellsfargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:merchant",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/credit-card-agreement.pdf",
+      "b": "Org:BANK",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:1",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:3",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:2",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:4",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:915",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:9",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-01",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:180",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:551",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:26",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-844",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-497",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-160",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-800",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-289",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:7",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:00",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:10",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:5",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:30",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:-60",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:11",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:24",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:29",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:31",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Amount:60",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Date:11/26/24",
+      "weight": 1
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account information",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account holder",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account number",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:Account type",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account\nreferenced",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account referenced",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account becomes",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:Account payoff",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "AccountRef:account early",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:Customer",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:Bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:Wells Fargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:Auto",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:bank",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:wellsfargo",
+      "weight": 3
+    },
+    {
+      "a": "data/samples/wells/auto-autopay-authorization.pdf",
+      "b": "Org:auto",
+      "weight": 3
+    }
+  ],
+  "mst_edges": [
+    {
+      "a": "data/samples/wells/direct-deposit-guide.pdf",
+      "b": "data/samples/wells/deposit-account-agreement.pdf",
+      "weight": 38,
+      "distance": 0.02631578947368421
+    },
+    {
+      "a": "data/samples/wells/ach-authorization-dealer.pdf",
+      "b": "data/samples/wells/deposit-account-agreement.pdf",
+      "weight": 23,
+      "distance": 0.043478260869565216
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "data/samples/wells/credit-card-agreement.pdf",
+      "weight": 83,
+      "distance": 0.012048192771084338
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "data/samples/wells/auto-autopay-authorization.pdf",
+      "weight": 45,
+      "distance": 0.022222222222222223
+    },
+    {
+      "a": "data/samples/wells/deposit-account-agreement.pdf",
+      "b": "data/samples/wells/wfa-1099-how-to-read.pdf",
+      "weight": 37,
+      "distance": 0.02702702702702703
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "type": "invoice",
+  "invoice_number": "INV-4478",
+  "invoice_date": "08/27/2025",
+  "due_date": "09/26/2025",
+  "items": [
+    {
+      "description": "Service 1",
+      "qty": 2,
+      "price": 50.55,
+      "amount": 101.1
+    },
+    {
+      "description": "Service 2",
+      "qty": 3,
+      "price": 117.7,
+      "amount": 353.1
+    },
+    {
+      "description": "Service 3",
+      "qty": 3,
+      "price": 60.99,
+      "amount": 182.97
+    },
+    {
+      "description": "Service 4",
+      "qty": 3,
+      "price": 126.17,
+      "amount": 378.51
+    }
+  ],
+  "total": 1015.68
+}

@@ -1,0 +1,56 @@
+{
+  "type": "bank_statement",
+  "account": "ACCT-291589",
+  "opening": 4187.77,
+  "closing": 3372.08,
+  "transactions": [
+    {
+      "date": "07/28/2025",
+      "description": "Online Transfer",
+      "amount": -138.02,
+      "balance": 4049.75
+    },
+    {
+      "date": "07/31/2025",
+      "description": "ATM Withdrawal",
+      "amount": -68.79,
+      "balance": 3980.96
+    },
+    {
+      "date": "08/03/2025",
+      "description": "Salary",
+      "amount": -179.29,
+      "balance": 3801.67
+    },
+    {
+      "date": "08/06/2025",
+      "description": "Online Transfer",
+      "amount": -173.08,
+      "balance": 3628.59
+    },
+    {
+      "date": "08/09/2025",
+      "description": "Salary",
+      "amount": -210.68,
+      "balance": 3417.91
+    },
+    {
+      "date": "08/12/2025",
+      "description": "Online Transfer",
+      "amount": -100.66,
+      "balance": 3317.25
+    },
+    {
+      "date": "08/15/2025",
+      "description": "Online Transfer",
+      "amount": 88.73,
+      "balance": 3405.98
+    },
+    {
+      "date": "08/18/2025",
+      "description": "Online Transfer",
+      "amount": -33.9,
+      "balance": 3372.08
+    }
+  ]
+}
